@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "sys.h": "c",
-        "oled_font.h": "c",
-        "oled.h": "c",
-        "spi.h": "c",
-        "stm32f10x.h": "c"
-    }
-}
