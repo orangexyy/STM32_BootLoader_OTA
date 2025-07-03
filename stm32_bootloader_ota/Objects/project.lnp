@@ -38,6 +38,7 @@
 ".\objects\at24c02.o"
 ".\objects\at24c256.o"
 ".\objects\w25q64.o"
+".\objects\flash.o"
 ".\objects\main.o"
 ".\objects\stm32f10x_it.o"
 --strict --scatter ".\Objects\project.sct"

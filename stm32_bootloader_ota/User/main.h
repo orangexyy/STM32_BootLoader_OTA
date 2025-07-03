@@ -1,0 +1,17 @@
+#ifndef __MAIN_H
+#define __MAIN_H
+
+#include "sys.h"
+#include "stm32f10x.h"                  // Device header
+
+#define FLASH_START_ADDR            0x08000000                                                  //FLASH起始地址
+#define FLASH_PAGE_SIZE             1024                                                        //FLASH扇区大小
+#define FLASH_PAGE_NUM              64                                                          //FLASH扇区总数
+#define FLASH_BLOCK_B_PAGE_NUM      20                                                          //B区扇区个数
+#define FLASH_BLOCK_A_PAGE_NUM      FLASH_PAGE_NUM - FLASH_BLOCK_B_PAGE_NUM                     //A区扇区个数
+#define FLASH_BLOCK_A_START_PAGE    FLASH_BLOCK_B_PAGE_NUM                                      //A区起始扇区编号
+#define FLASH_BLOCK_A_START_ADDR    FLASH_START_ADDR + FLASH_BLOCK_B_PAGE_NUM * FLASH_PAGE_SIZE //A区起始地址
+
+
+#endif /* MAIN_H */
+

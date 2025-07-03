@@ -748,6 +748,11 @@
               <FileType>1</FileType>
               <FilePath>.\Hardware\w25q64.c</FilePath>
             </File>
+            <File>
+              <FileName>flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>C:\Users\S10928\Desktop\stm32_bootloader_ota\stm32_bootloader_ota\Hardware\flash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

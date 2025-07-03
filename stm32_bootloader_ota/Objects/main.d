@@ -31,7 +31,7 @@
 .\objects\main.o: .\System\sys.h
 .\objects\main.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\main.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
-.\objects\main.o: .\System\timer.h
+.\objects\main.o: User\main.h
 .\objects\main.o: .\System\delay.h
 .\objects\main.o: .\Hardware\led.h
 .\objects\main.o: .\Hardware\key.h
@@ -41,3 +41,4 @@
 .\objects\main.o: .\Hardware\at24c02.h
 .\objects\main.o: .\Hardware\at24c256.h
 .\objects\main.o: .\Hardware\w25q64.h
+.\objects\main.o: .\Hardware\flash.h

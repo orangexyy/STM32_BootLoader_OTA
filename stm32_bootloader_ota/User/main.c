@@ -1,6 +1,6 @@
 #include "stm32f10x.h"                  // Device header
 #include "sys.h"
-#include "timer.h" 
+#include "main.h" 
 #include "delay.h"
 #include "led.h"
 #include "key.h"
@@ -10,7 +10,7 @@
 #include "at24c02.h"
 #include "at24c256.h"
 #include "w25q64.h"
-
+#include "flash.h"
 
 uint16_t i;
 char rx_buffer[512];
@@ -26,15 +26,13 @@ int main(void)
 	usart1_init(115200);
 
 	usart3_init(115200);
-	usart3_printf("start \r\n");
 	w25q64_init();
 	w25q64_sector_erase_64k(0);
-	w25q64_test();
-
+	// w25q64_test();
 	at24c256_init();
-	at24c256_test();
+	// at24c256_test();
 	
-	usart3_printf("start \r\n");
+	usart3_printf("\r\n start \r\n");
 
     while(1)
     {
