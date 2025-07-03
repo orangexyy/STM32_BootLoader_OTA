@@ -17,11 +17,20 @@
  
 typedef struct 
 {
-    uint32_t ota_flag;
+    uint32_t ota_flag;              //ota更新标志
+    uint32_t app_data_size[11];     //应用程序所占的内存大小，第0个代表OTA程序，后面的为存放在外部flash的应用程序
 
 }OTA_INFO_DATA;
 
+typedef struct 
+{
+    uint8_t updata_a_buffer[FLASH_PAGE_SIZE];
+    uint32_t updata_data_block_num;    //应用程序存放在外部flash的扇区位置，0为OTA程序放在0号block，后面的为存放在外部flash的应用程序
+    
+}UPDATE_A_DATA;
+
 extern OTA_INFO_DATA ota_info_struct;
+extern UPDATE_A_DATA update_a_struct;
 
 #endif /* MAIN_H */
 

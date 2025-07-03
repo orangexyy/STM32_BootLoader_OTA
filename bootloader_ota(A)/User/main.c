@@ -14,6 +14,8 @@
 #include "bootloader.h" 
 
 OTA_INFO_DATA ota_info_struct;
+UPDATE_A_DATA update_a_struct;
+
 
 char rx_buffer[512];
 

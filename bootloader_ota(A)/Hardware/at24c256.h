@@ -17,6 +17,7 @@ uint8_t at24c256_read_byte(uint16_t addr);
 void at24c256_write_page(uint16_t addr, uint8_t *data, uint8_t len);
 void at24c256_read_buffer(uint16_t addr, uint8_t *buffer, uint16_t len);
 void at24c256_read_ota_data(void);
+void at24c256_write_ota_data(void);
 // void at24c256_Test(void);
 
 #endif

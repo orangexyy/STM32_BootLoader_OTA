@@ -8,6 +8,9 @@
         "sys.h": "c",
         "w25q64.h": "c",
         "timer.h": "c",
-        "oled.h": "c"
+        "oled.h": "c",
+        "usart3.h": "c",
+        "key.h": "c",
+        "led.h": "c"
     }
 }

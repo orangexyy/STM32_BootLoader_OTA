@@ -206,6 +206,19 @@ void at24c256_read_ota_data(void)
     at24c256_read_buffer(0, (uint8_t *)&ota_info_struct, OTA_INFO_DATA_SIZE);
 }
 
+void at24c256_write_ota_data(void)
+{
+    uint8_t i;
+    uint8_t *buf;
+
+    buf = (uint8_t *)&ota_info_struct;
+    for(i=0; i <(OTA_INFO_DATA_SIZE/16); i++)
+    {
+        at24c256_write_page(i*16, buf+i*16, 16);
+        delay_ms(5);
+    }
+}
+
 ///* 测试函数 */
 //void AT24C256_Test(void)
 //{

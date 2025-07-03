@@ -14,7 +14,7 @@
 #include "bootloader.h" 
 
 OTA_INFO_DATA ota_info_struct;
-
+UPDATE_A_DATA update_a_struct;
 
 void usart3_test(void);
 void w25q64_test(void);
@@ -23,6 +23,8 @@ void flash_test(void);
 
 int main(void)
 {
+	uint8_t i;
+	
 	delay_init();
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
 	
@@ -30,8 +32,20 @@ int main(void)
 	usart3_init(115200);
 	w25q64_init();
 	at24c256_init();
-	
+	ota_info_struct.ota_flag = 0x11223347;
+	for(i=0; i<11; i++)
+	{
+		ota_info_struct.app_data_size[i] = i;
+	}
+	at24c256_write_ota_data();
 	at24c256_read_ota_data();
+		
+	usart3_printf("ota_flag:%x\r\n",ota_info_struct.ota_flag);
+	for(i=0; i<11; i++)
+	{
+		usart3_printf("%x\r\n",ota_info_struct.app_data_size[i]);
+	}
+	
 	bootloader_branch();
 	
 	usart3_printf("\r\n start \r\n");

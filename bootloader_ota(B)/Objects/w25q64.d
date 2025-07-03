@@ -2,7 +2,7 @@
 .\objects\w25q64.o: Hardware\spi.h
 .\objects\w25q64.o: .\Start\stm32f10x.h
 .\objects\w25q64.o: .\Start\core_cm3.h
-.\objects\w25q64.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\w25q64.o: D:\51\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\w25q64.o: .\Start\system_stm32f10x.h
 .\objects\w25q64.o: .\User\stm32f10x_conf.h
 .\objects\w25q64.o: .\Library\stm32f10x_adc.h
