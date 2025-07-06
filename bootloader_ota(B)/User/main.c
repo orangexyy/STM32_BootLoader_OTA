@@ -23,7 +23,7 @@ void flash_test(void);
 
 int main(void)
 {
-	uint8_t i;
+//	uint8_t i;
 	
 	delay_init();
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
@@ -32,40 +32,47 @@ int main(void)
 	usart3_init(115200);
 	w25q64_init();
 	at24c256_init();
-	ota_info_struct.ota_flag = 0x11223347;
-	for(i=0; i<11; i++)
-	{
-		ota_info_struct.app_data_size[i] = i;
-	}
-	at24c256_write_ota_data();
-	at24c256_read_ota_data();
+
+	// ota_info_struct.flag = 0x11223344;
+	// for(i=0; i<11; i++)
+	// {
+	// 	ota_info_struct.app_data_size[i] = 55;
+	// }
+	// at24c256_write_ota_data();
+	// at24c256_read_ota_data();
 		
-	usart3_printf("ota_flag:%x\r\n",ota_info_struct.ota_flag);
-	for(i=0; i<11; i++)
-	{
-		usart3_printf("%x\r\n",ota_info_struct.app_data_size[i]);
-	}
+	// usart3_printf("flag:%x\r\n",ota_info_struct.flag);
+	// for(i=0; i<11; i++)
+	// {
+	// 	usart3_printf("%x\r\n",ota_info_struct.app_data_size[i]);
+	// }
+	
+	usart3_printf("go to bootloader\r\n");
 	
 	bootloader_branch();
 	
-	usart3_printf("\r\n start \r\n");
 	
-
     while(1)
     {
+		
+		bootloader_event_detect();
 
+        // usart3_printf("Erase A Block\r\n");
+
+		bootloader_event_handle();
     }	
 }
 
+
 void usart3_test(void)
 {
-	char rx_buffer[512];
+	uint8_t rx_buffer[512];
 
 	usart3_printf("usart3 test \r\n");
 	if( get_usart3_receive_flag() )
 	{
 		get_usart3_rx_buffer(rx_buffer);
-		usart3_printf("receive %d data\n data : %s\n", get_usart3_rx_len(),rx_buffer);//串口回传
+		usart3_printf("receive %d byte data, data : %s\r\n", get_usart3_rx_len(),rx_buffer);//串口回传
 	}	
 }
 

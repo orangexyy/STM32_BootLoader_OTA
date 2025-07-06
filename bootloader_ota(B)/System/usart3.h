@@ -2,10 +2,13 @@
 #define __UASRT3_H
 #include "stm32f10x.h"
 
-#define USART_RX_SIZE   2048
-#define USART_TX_SIZE   512
-#define USART_RX_MAX    512
+#define USART_RX_SIZE   1024
+#define USART_TX_SIZE   256
+#define USART_RX_MAX    256
 #define NUM    10
+
+extern uint8_t usart3_rx_buffer[USART_RX_SIZE];
+extern uint16_t usart3_rx_bufferr_len;
 
 // typedef struct{
 //     uint8_t *p_start;
@@ -24,7 +27,8 @@
 // extern usart_rx_buffer_ctr usart3_rx_ctr;
 
 uint8_t get_usart3_receive_flag(void);
-void get_usart3_rx_buffer(char* buf);
+void clear_usart3_receive_flag(void);
+void get_usart3_rx_buffer(uint8_t* buf);
 uint16_t get_usart3_rx_len(void);
 void clear_usart3_rx_buffer(void);
 

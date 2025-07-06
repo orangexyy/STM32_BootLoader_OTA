@@ -34,12 +34,12 @@ int main(void)
 	w25q64_init();
 	at24c256_init();
 	
-	usart3_printf("\r\n start \r\n");
+	usart3_printf("a block start\r\n");
 	
 
     while(1)
     {
-			usart3_test();
+		usart3_test();
     }	
 }
 
@@ -48,7 +48,7 @@ void usart3_test(void)
 	if( get_usart3_receive_flag() )
 	{
 		get_usart3_rx_buffer(rx_buffer);
-		usart3_printf("receive %d data\n data : %s\n", get_usart3_rx_len(),rx_buffer);//串口回传
+		usart3_printf("receive %d byte data, data : %s\r\n", get_usart3_rx_len(),rx_buffer);//串口回传
 	}	
 }
 

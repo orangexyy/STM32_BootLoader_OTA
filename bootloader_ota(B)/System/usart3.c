@@ -5,7 +5,7 @@
 #include "stdio.h"
 
 volatile bool usart3_receive_flag = false;    //串口是否已接收完毕
-uint16_t usart3_rx_len = 0;
+uint16_t usart3_rx_bufferr_len;
 uint8_t usart3_rx_buffer[USART_RX_SIZE];
 uint8_t usart3_tx_buffer[USART_TX_SIZE];
 // usart_rx_buffer_ctr usart3_rx_ctr;
@@ -28,12 +28,12 @@ void USART3_IRQHandler(void)
         USART3 -> DR;  //访问一下DR寄存器
 
         DMA_Cmd(DMA1_Channel3, DISABLE);
-        usart3_rx_len = USART_RX_MAX - DMA_GetCurrDataCounter(DMA1_Channel3);
+        usart3_rx_bufferr_len = USART_RX_MAX - DMA_GetCurrDataCounter(DMA1_Channel3);
         DMA_SetCurrDataCounter( DMA1_Channel3, USART_RX_MAX);
         DMA_Cmd(DMA1_Channel3, ENABLE);
 
         
-        usart3_rx_buffer[usart3_rx_len] = '\0';          //给最后一位补上结束符
+        usart3_rx_buffer[usart3_rx_bufferr_len] = '\0';          //给最后一位补上结束符
         usart3_receive_flag = true;                //标记一帧数据已接收完成
 
         USART_ClearITPendingBit(USART3, USART_IT_IDLE);  //清除IDLE中断标志位
@@ -55,12 +55,19 @@ uint8_t get_usart3_receive_flag(void)
         return 1;//如果接收已完成，返回1
     }
     else
+    {   
         return 0;//接收未完成，返回0
+    }  
+}
+
+void clear_usart3_receive_flag(void)
+{
+    usart3_receive_flag = false;
 }
 
 /* @brief 获取接收到的数据包。
  * @retval  接收到的数据包，是一个长度为256的uint8_t数组指针，有结束符'\0'。 */
-void get_usart3_rx_buffer(char* buf)
+void get_usart3_rx_buffer(uint8_t* buf)
 { 
 	uint16_t i = 0;
 	for(i=0; i<get_usart3_rx_len(); i++)
@@ -72,7 +79,7 @@ void get_usart3_rx_buffer(char* buf)
 /* @brief 获取接收到的数据包长度。
  * @retval 接收完一帧数据的长度 */
 uint16_t get_usart3_rx_len(void)
-{ return usart3_rx_len; }
+{ return usart3_rx_bufferr_len; }
 
 /* @brief 清空数据包，实际是把第一位用结束符替代。*/
 void clear_usart3_rx_buffer(void)

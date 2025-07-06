@@ -8,13 +8,13 @@
   * 参    数：page_num       页数
   * 返 回 值：无
   */
-void flash_erase(uint16_t start_addr, uint16_t page_num)
+void flash_erase(uint16_t start_page, uint16_t page_num)
 {
     uint16_t i;
     FLASH_Unlock();
     for( i=0; i<page_num; i++)
     {
-        FLASH_ErasePage((0x08000000 + start_addr * 1024) + (1024 * i));
+        FLASH_ErasePage((0x08000000 + start_page * 1024) + (1024 * i));
     }
     FLASH_Lock();
 }
