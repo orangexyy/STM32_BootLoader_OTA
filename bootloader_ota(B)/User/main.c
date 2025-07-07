@@ -54,11 +54,7 @@ int main(void)
 	
     while(1)
     {
-		
 		bootloader_event_detect();
-
-        // usart3_printf("Erase A Block\r\n");
-
 		bootloader_event_handle();
     }	
 }
@@ -66,14 +62,14 @@ int main(void)
 
 void usart3_test(void)
 {
-	uint8_t rx_buffer[512];
+//	uint8_t rx_buffer[512];
 
-	usart3_printf("usart3 test \r\n");
-	if( get_usart3_receive_flag() )
-	{
-		get_usart3_rx_buffer(rx_buffer);
-		usart3_printf("receive %d byte data, data : %s\r\n", get_usart3_rx_len(),rx_buffer);//串口回传
-	}	
+//	usart3_printf("usart3 test \r\n");
+//	if( get_usart3_receive_flag() )
+//	{
+//		get_usart3_rx_buffer(rx_buffer);
+//		usart3_printf("receive %d byte data, data : %s\r\n", get_usart3_rx_len(),rx_buffer);//串口回传
+//	}	
 }
 
 void w25q64_test(void)

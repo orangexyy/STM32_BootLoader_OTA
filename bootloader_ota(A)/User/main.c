@@ -17,7 +17,7 @@ OTA_INFO_DATA ota_info_struct;
 UPDATE_A_DATA update_a_struct;
 
 
-char rx_buffer[512];
+uint8_t rx_buffer[2565];
 
 void usart3_test(void);
 void w25q64_test(void);
@@ -39,7 +39,7 @@ int main(void)
 
     while(1)
     {
-		usart3_test();
+		//usart3_test();
     }	
 }
 

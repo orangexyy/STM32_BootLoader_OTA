@@ -11,8 +11,6 @@
         "oled.h": "c",
         "key.h": "c",
         "led.h": "c",
-        "bootloader.h": "c",
-        "main.h": "c",
-        "string.h": "c"
+        "bootloader.h": "c"
     }
 }

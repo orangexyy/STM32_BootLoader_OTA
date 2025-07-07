@@ -8,40 +8,45 @@ volatile bool usart3_receive_flag = false;    //串口是否已接收完毕
 uint16_t usart3_rx_len = 0;
 uint8_t usart3_rx_buffer[USART_RX_SIZE];
 uint8_t usart3_tx_buffer[USART_TX_SIZE];
-// usart_rx_buffer_ctr usart3_rx_ctr;
-
-// void usart3_rx_buffer_Init(void)
-// {
-// 	usart3_rx_ctr.p_usart_rx_write 	= &usart3_rx_ctr.p_usart_rx_buffer[0];
-// 	usart3_rx_ctr.p_usart_rx_read 	= &usart3_rx_ctr.p_usart_rx_buffer[0];
-// 	usart3_rx_ctr.p_usart_rx_end 	= &usart3_rx_ctr.p_usart_rx_buffer[NUM-1];
-
-// 	usart3_rx_ctr.p_usart_rx_write->p_start = &usart3_rx_buffer[0];
-// 	usart3_rx_ctr.usart_rx_count = 0;
-// }
 
 void USART3_IRQHandler(void)
 {
-    if( USART_GetITStatus(USART3, USART_IT_IDLE) != RESET )
+    if(USART_GetITStatus(USART3, USART_IT_IDLE) != RESET)
     {
-        USART3 -> SR;  //访问一下SR寄存器
-        USART3 -> DR;  //访问一下DR寄存器
-
-        DMA_Cmd(DMA1_Channel3, DISABLE);
-        usart3_rx_len = USART_RX_MAX - DMA_GetCurrDataCounter(DMA1_Channel3);
-        DMA_SetCurrDataCounter( DMA1_Channel3, USART_RX_MAX);
-        DMA_Cmd(DMA1_Channel3, ENABLE);
-
+        uint16_t temp;
         
-        usart3_rx_buffer[usart3_rx_len] = '\0';          //给最后一位补上结束符
-        usart3_receive_flag = true;                //标记一帧数据已接收完成
-
-        USART_ClearITPendingBit(USART3, USART_IT_IDLE);  //清除IDLE中断标志位
+        // 清除IDLE标志（通过先读SR，再读DR）
+        temp = USART3->SR;
+        temp = USART3->DR;
+        (void)temp;  // 避免编译器警告
+        
+        // 临时禁用DMA以读取计数器
+        DMA_Cmd(DMA1_Channel3, DISABLE);
+        
+        // 计算接收长度
+        usart3_rx_len = sizeof(usart3_rx_buffer) - DMA_GetCurrDataCounter(DMA1_Channel3);
+        
+        // 确保字符串以'\0'结尾
+        if(usart3_rx_len < sizeof(usart3_rx_buffer))
+        {
+            usart3_rx_buffer[usart3_rx_len] = '\0';
+        }
+        
+        // 调试输出：验证接收内容
+        usart3_printf("Rx Len: %d\r\n", usart3_rx_len);
+        usart3_printf("Rx Data: %s\r\n", usart3_rx_buffer);
+        
+        // 标记接收完成
+        usart3_receive_flag = true;
+        
+        // 重新设置DMA计数器并启用
+        DMA_SetCurrDataCounter(DMA1_Channel3, sizeof(usart3_rx_buffer));
+        DMA_Cmd(DMA1_Channel3, ENABLE);
+        
+        // 清除中断标志（虽然通过读SR和DR已清除，但为保险起见）
+        USART_ClearITPendingBit(USART3, USART_IT_IDLE);
     }
 }
-
-
-
 
 
 /* @brief 获取接收完毕的标志位，查看是否已接收完成。
@@ -80,26 +85,38 @@ void clear_usart3_rx_buffer(void)
 
 
 
-
-
-/* @brief 阻塞式地发送一个字节。*/
-void usart3_send_byte_blocking(uint8_t data)
+void usart3_send_byte(uint8_t Byte)		//发送单个字符
 {
-    while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET);
-    USART_SendData(USART3, data);
+	USART_SendData(USART3,Byte);
+	while(USART_GetFlagStatus(USART3,USART_FLAG_TXE) == RESET);
 }
 
-/* @brief usart3_printf发送函数，printf的参数格式*/
-void usart3_printf(char* fmt,...)
+void usart3_send_string(char *String)		//发送一串字符
 {
-    va_list ap;
-    va_start(ap, fmt);
-    vsprintf((char*)usart3_tx_buffer, fmt, ap);
-    va_end(ap);
-    uint16_t len = strlen( (char*)usart3_tx_buffer );
-    for(uint16_t i=0; i<len; i++)
-        usart3_send_byte_blocking(usart3_tx_buffer[i]);
+	uint8_t i;
+	for(i=0; String[i] != '\0'; i++)
+	{
+		usart3_send_byte(String[i]);
+	}
 }
+
+int fputc(int ch, FILE *f)
+{ 	
+	while((USART3->SR&0X40)==0);//循环发送,直到发送完毕   
+	USART3->DR = (unsigned char) ch;      
+	return ch;
+}
+
+void usart3_printf(char *format,...)		//打印可变参数 可移植
+{
+	char String[100];
+	va_list arg;
+	va_start(arg,format);
+	vsprintf(String,format,arg);
+	va_end(arg);
+	usart3_send_string(String);
+}
+
 
 
 static void usart3_periph_init(unsigned int bound)
@@ -111,7 +128,7 @@ static void usart3_periph_init(unsigned int bound)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
@@ -148,28 +165,29 @@ static void usart3_rx_dma_init(void)
     /*开启USART3的接收寄存器的DMA通道，查参考手册，是DMA1通道3。*/
     DMA_DeInit(DMA1_Channel3);
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-    USART_DMACmd(USART3, USART_DMAReq_Rx, ENABLE);
+    
     DMA_InitTypeDef DMA_InitStructure = {
         .DMA_PeripheralBaseAddr = (uint32_t)&USART3->DR,
         .DMA_MemoryBaseAddr = (uint32_t)usart3_rx_buffer, 
         .DMA_DIR = DMA_DIR_PeripheralSRC,
-        .DMA_BufferSize = USART_RX_MAX, 
+        .DMA_BufferSize = sizeof(usart3_rx_buffer), 
         .DMA_PeripheralInc = DMA_PeripheralInc_Disable,
         .DMA_MemoryInc = DMA_MemoryInc_Enable,
         .DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte,
         .DMA_MemoryDataSize = DMA_MemoryDataSize_Byte,
-        .DMA_Mode = DMA_Mode_Circular,
+        .DMA_Mode = DMA_Mode_Normal,
         .DMA_Priority = DMA_Priority_Medium,
         .DMA_M2M = DMA_M2M_Disable,
     };
     DMA_Init(DMA1_Channel3, &DMA_InitStructure);
     DMA_Cmd(DMA1_Channel3, ENABLE);
+    USART_DMACmd(USART3, USART_DMAReq_Rx, ENABLE);
 }
 
 /* @brief 总初始化*/
 void usart3_init(unsigned int bound)
 {
     usart3_periph_init(bound);                  //初始化串口外设
-    usart3_idle_interrupt_init();   //初始化串口的空闲中断
     usart3_rx_dma_init();           //初始化接收寄存器的DMA通道
+    usart3_idle_interrupt_init();   //初始化串口的空闲中断 
 }
