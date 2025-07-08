@@ -115,9 +115,8 @@ void bootloader_ota_a_block(void)
 {
     uint8_t i;
 
-    usart3_printf("Start OTA Update\r\n");
     usart3_printf("len %d byte\r\n",ota_info_struct.app_data_size[update_a_struct.data_block_num]);
-    if (ota_info_struct.app_data_size[update_a_struct.data_block_num] % 4 == 0)	//判断字节长度是否正确
+    if(ota_info_struct.app_data_size[update_a_struct.data_block_num] % 4 == 0)	//判断字节长度是否正确
     {
         flash_erase(FLASH_BLOCK_A_START_PAGE,FLASH_BLOCK_A_PAGE_NUM);
         for (i = 0; i<ota_info_struct.app_data_size[update_a_struct.data_block_num]/FLASH_PAGE_SIZE; i++)
@@ -145,23 +144,41 @@ void bootloader_ota_a_block(void)
 
 void bootloader_erase_a_block(void)
 {
-    usart3_printf("Erase A Block\r\n");
     flash_erase(FLASH_BLOCK_A_START_PAGE,FLASH_BLOCK_A_PAGE_NUM);
     usart3_printf("Erase A Block OK\r\n");
+    delay_ms(1000);
+    bootloader_enter_info_printf();
 }
 
 void bootloader_iap_start(void)
 {
-    static uint8_t iap_start_flag = 0;
+    static uint8_t iap_to_a_start_flag = 0;
+    static uint8_t iap_to_flash_start_flag = 0;
 
-    if (iap_start_flag == 0)
+    if(xmodem_protocol_struct.direction_flag == 0)
     {
-        iap_start_flag = 1;
-        usart3_printf("Serial IAP Download For A Block By Xmodem Procotol, Use Bin Format File\r\n");
-        flash_erase(FLASH_BLOCK_A_START_PAGE,FLASH_BLOCK_A_PAGE_NUM);
-        usart3_printf("Start Serial IAP Download\r\n");
-        xmodem_protocol_struct.time = 0;
-        xmodem_protocol_struct.receive_buf_num = 0;
+        if (iap_to_a_start_flag == 0)
+        {
+            iap_to_a_start_flag = 1;
+            flash_erase(FLASH_BLOCK_A_START_PAGE,FLASH_BLOCK_A_PAGE_NUM);
+            xmodem_protocol_struct.time = 0;
+            xmodem_protocol_struct.receive_buf_num = 0;
+            usart3_printf("Serial IAP Download For A Block By Xmodem Procotol, Use Bin Format File\r\n");
+            usart3_printf("Start Serial IAP Download\r\n");
+        }
+    }
+    else
+    {
+        if (iap_to_flash_start_flag == 0)
+        {
+            iap_to_flash_start_flag = 1;
+            xmodem_protocol_struct.time = 0;
+            xmodem_protocol_struct.receive_buf_num = 0;
+            ota_info_struct.app_data_size[update_a_struct.data_block_num] = 0;
+            w25q64_sector_erase_64k(update_a_struct.data_block_num);
+            usart3_printf("Serial IAP Download For External FLASH By Xmodem Procotol, Use Bin Format File\r\n");
+            usart3_printf("Start Serial IAP Download\r\n"); 
+        }
     }
     delay_ms(10);
     if(xmodem_protocol_struct.time >= 100)
@@ -174,15 +191,31 @@ void bootloader_iap_start(void)
 
 void bootloader_iap_receive(void)
 {
+    uint8_t i;
+
     xmodem_protocol_struct.receive_crc = xmodem_crc16(&usart3_rx_buffer[3], 128);    
     if(xmodem_protocol_struct.receive_crc == usart3_rx_buffer[131]*256 + usart3_rx_buffer[132])       //crc检验
     {
         xmodem_protocol_struct.receive_buf_num++;                                   //接收到的包数（一包128byte）累加
         memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % (FLASH_PAGE_SIZE/128))*128], &usart3_rx_buffer[3], 128);      //复制到更新A区的buffer里
+        //判断方向
         if((xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128)) == 0)       //每接收到8包（1024byte）写入一页flash
         {
-            flash_write(FLASH_BLOCK_A_START_ADDR + ((xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) - 1) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, FLASH_PAGE_SIZE);
+            if (xmodem_protocol_struct.direction_flag == 0)
+            {
+                flash_write(FLASH_BLOCK_A_START_ADDR + ((xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) - 1) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, FLASH_PAGE_SIZE);
+            }
+            else
+            {
+                for (i=0; i<4; i++)
+                {
+                    //偏移量为前面有 data_block_num 块 64kb 换算成字节 等于块数*64*1024字节 换算成页 再除以256   最后加上当接收的页数的偏移 xmodem_protocol_struct.receive_buf_num/8 - 1)*4 + i
+                    w25q64_write_page((xmodem_protocol_struct.receive_buf_num/8 - 1)*4 + i + update_a_struct.data_block_num * 64 * 4, &update_a_struct.buffer[i*256], 256);
+                }
+                
+            }
         }
+        
         usart3_printf("\x06");     //检验通过，发送ACK
     }
     else
@@ -193,26 +226,47 @@ void bootloader_iap_receive(void)
 
 void bootloader_iap_end(void)
 {
+    uint8_t i;
+
     usart3_printf("\x06");         //接收数据结束，发送ACK
     if((xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128)) != 0)           //处理接收到的剩余不满8包（1024byte）写入一页flash的数据
     {
-        flash_write(FLASH_BLOCK_A_START_ADDR + (xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, (xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128))*128);
+        if (xmodem_protocol_struct.direction_flag == 0)
+        {
+            flash_write(FLASH_BLOCK_A_START_ADDR + (xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, (xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128))*128);
+        }
+        else
+        {
+            for (i=0; i<4; i++)
+            {
+                //偏移量为前面有 data_block_num 块 64kb 换算成字节 等于块数*64*1024字节 换算成页 再除以256   最后加上当接收的页数的偏移 xmodem_protocol_struct.receive_buf_num/8 - 1)*4 + i
+                w25q64_write_page((xmodem_protocol_struct.receive_buf_num/8)*4 + i + update_a_struct.data_block_num * 64 * 4, &update_a_struct.buffer[i*256], 256);
+            }
+            
+        }
     }
-    delay_ms(100);
-    NVIC_SystemReset();
+
+    if (xmodem_protocol_struct.direction_flag == 0)
+    {
+        usart3_printf("Serial IAP Download Success\r\n");
+        usart3_printf("System Will Reset\r\n");
+        delay_ms(1000);
+        NVIC_SystemReset();
+    }
+    else
+    {
+        ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.receive_buf_num *128;
+        at24c256_write_ota_data();
+        usart3_printf("Serial IAP Download Success\r\n");
+        delay_ms(1000);
+        bootloader_enter_info_printf();
+    }
+    
 }
 
 uint8_t bootloader_set_ota_version(void)
 {
-    static uint8_t flag = 0;
     int temp;
-
-    if(flag == 0)
-    {
-        usart3_printf("Set OTA Version\r\n");
-        usart3_printf("Please Input OTA Version (Format:VER-X.X.X)\r\n");
-        flag = 1;
-    }
     
     if(usart3_rx_buffer_len == 9)
     {
@@ -240,16 +294,42 @@ uint8_t bootloader_set_ota_version(void)
 
 void bootloader_get_ota_version(void)
 {
-    usart3_printf("Get OTA Version\r\n");
     at24c256_read_ota_data();
     usart3_printf("OTA Version Is : %s\r\n",ota_info_struct.version);
     delay_ms(1000);
     bootloader_enter_info_printf();
 }
 
+uint8_t bootloader_select_flash_block(void)
+{
+    int temp;
+
+    if(usart3_rx_buffer_len == 6)
+    {
+        if(sscanf((char *)usart3_rx_buffer,"BLOCK%d", &temp) == 1)
+        {
+            if((usart3_rx_buffer[usart3_rx_buffer_len-1] >= 0x31) && (usart3_rx_buffer[usart3_rx_buffer_len-1] <= 0x39))
+            {
+                update_a_struct.data_block_num = usart3_rx_buffer[usart3_rx_buffer_len-1] - 0x30;
+                usart3_printf("FLASH Block%d Is Selected\r\n",update_a_struct.data_block_num);
+                delay_ms(500);
+                return 1;
+            }
+        }
+        else
+        {
+            usart3_printf("FLASH Block Format Error:%s\r\n",usart3_rx_buffer);
+            usart3_printf("Select the FLASH Block(1~9) Again:(Format:BLOCKx)\r\n");
+            memset(usart3_rx_buffer, 0, usart3_rx_buffer_len);
+            usart3_rx_buffer_len = 0;
+            return 0;
+        }
+    }
+	return 0;
+}
+
 void bootloader_system_reset(void)
 {
-    usart3_printf("System Will Reset\r\n");
     delay_ms(1000);
     NVIC_SystemReset();
 }
@@ -261,22 +341,41 @@ void bootloader_event_detect(void)
     {
         if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '1'))
         {
+            usart3_printf("Erase A Block\r\n");
             bootloader_current_event = BOOTLOADER_EVENT_ERASE_A;
         }
         else if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '2'))
         {
+            xmodem_protocol_struct.direction_flag = 0;
             bootloader_current_event = BOOTLOADER_EVENT_IAP_START;
         }
         else if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '3'))
         {
+            usart3_printf("Set OTA Version\r\n");
+            usart3_printf("Please Input OTA Version (Format:VER-X.X.X)\r\n");
             bootloader_current_event = BOOTLOADER_EVENT_SET_OTA_VERSION;
         }
         else if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '4'))
         {
+            usart3_printf("Get OTA Version\r\n");
             bootloader_current_event = BOOTLOADER_EVENT_GET_OTA_VERSION;
+        }
+        else if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '5'))
+        {
+            usart3_printf("Download Program To External FLASH\r\n");
+            usart3_printf("Select the FLASH Block(1~9):(Format:BLOCKx)\r\n");
+            xmodem_protocol_struct.direction_flag = 1;
+            bootloader_current_event = BOOTLOADER_EVENT_DOWNLOAD_TO_EXTERNAL_FLASH;
+        }
+        else if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '6'))
+        {
+            usart3_printf("Download Program From External FLASH\r\n");
+            usart3_printf("Select the FLASH Block(1~9):(Format:BLOCKx)\r\n");
+            bootloader_current_event = BOOTLOADER_EVENT_DOWNLOAD_FROM_EXTERNAL_FLASH;
         }
         else if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '7'))
         {
+            usart3_printf("System Will Reset\r\n");
             bootloader_current_event = BOOTLOADER_EVENT_SYSTEM_RESET;
         }
         else if((usart3_rx_buffer_len == 133) && (usart3_rx_buffer[0] == 0x01))
@@ -295,10 +394,6 @@ void bootloader_event_handle(void)
     switch(bootloader_current_event)
     {
         case BOOTLOADER_EVENT_NONE:
-            break;
-        case BOOTLOADER_EVENT_OTA:
-            bootloader_ota_a_block();
-            bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
             break;
         case BOOTLOADER_EVENT_ERASE_A:
             bootloader_erase_a_block();
@@ -326,10 +421,17 @@ void bootloader_event_handle(void)
             bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
             break;
         case BOOTLOADER_EVENT_DOWNLOAD_TO_EXTERNAL_FLASH: 
-            bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
+            if(bootloader_select_flash_block() == 1)
+            {
+                bootloader_current_event = BOOTLOADER_EVENT_IAP_START;		//清除标志位 
+            }
             break;
         case BOOTLOADER_EVENT_DOWNLOAD_FROM_EXTERNAL_FLASH: 
-            bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
+            if(bootloader_select_flash_block() == 1)
+            {
+                bootloader_ota_a_block();
+                bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位  
+            }
             break;
         case BOOTLOADER_EVENT_SYSTEM_RESET:
             bootloader_system_reset();

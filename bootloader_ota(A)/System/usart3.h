@@ -4,23 +4,6 @@
 
 #define USART_RX_SIZE   256
 #define USART_TX_SIZE   256
-#define NUM    10
-
-// typedef struct{
-//     uint8_t *p_start;
-//     uint8_t *p_end;
-// }usart_rx_buffer_ptr;
-
-// typedef struct{
-//     uint16_t usart_rx_count;
-//     usart_rx_buffer_ptr p_usart_rx_buffer[NUM];
-//     usart_rx_buffer_ptr *p_usart_rx_write;
-//     usart_rx_buffer_ptr *p_usart_rx_read;
-//     usart_rx_buffer_ptr *p_usart_rx_end;
-// }usart_rx_buffer_ctr;
-
-// extern uint8_t usart3_rx_buffer[USART_RX_SIZE];
-// extern usart_rx_buffer_ctr usart3_rx_ctr;
 
 uint8_t get_usart3_receive_flag(void);
 void get_usart3_rx_buffer(char* buf);

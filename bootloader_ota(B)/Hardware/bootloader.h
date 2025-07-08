@@ -24,7 +24,8 @@ typedef struct
 {
     uint32_t time;   
     uint32_t receive_buf_num; 
-    uint16_t receive_crc;         
+    uint16_t receive_crc;   
+    uint8_t  direction_flag;     //0；下载到a区 1：下载到外部flash
 } XMODEM_PROTOCOL_DATA;
 
 typedef enum
@@ -54,6 +55,7 @@ void bootloader_iap_receive(void);
 void bootloader_iap_end(void);
 uint8_t bootloader_set_ota_version(void);
 void bootloader_get_ota_version(void);
+uint8_t bootloader_select_flash_block(void);
 void bootloader_system_reset(void);
 
 void bootloader_event_detect(void);
