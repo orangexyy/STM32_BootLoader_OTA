@@ -202,8 +202,16 @@ void at24c256_read_buffer(uint16_t addr, uint8_t *buffer, uint16_t len)
 
 void at24c256_read_ota_data(void)
 {
+    uint8_t i;
     memset(&ota_info_struct, 0, OTA_INFO_DATA_SIZE);
     at24c256_read_buffer(0, (uint8_t *)&ota_info_struct, OTA_INFO_DATA_SIZE);
+    usart3_printf("Read OTA version: %s\r\n", ota_info_struct.version); // 调试打印
+
+    for (i=1; i<9; i++)
+    {
+        usart3_printf("ota_info_struct.app_data_size[%d]: %d\r\n", i,ota_info_struct.app_data_size[i]); // 调试打印
+    }
+    
 }
 
 void at24c256_write_ota_data(void)
@@ -212,6 +220,7 @@ void at24c256_write_ota_data(void)
     uint8_t *buf;
 
     buf = (uint8_t *)&ota_info_struct;
+    usart3_printf("Writing OTA info to EEPROM (size: %d)\r\n", OTA_INFO_DATA_SIZE);
     for(i=0; i <(OTA_INFO_DATA_SIZE/16); i++)
     {
         at24c256_write_page(i*16, buf+i*16, 16);

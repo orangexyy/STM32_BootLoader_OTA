@@ -3,7 +3,7 @@
 .\objects\flash.o: .\System\sys.h
 .\objects\flash.o: .\Start\stm32f10x.h
 .\objects\flash.o: .\Start\core_cm3.h
-.\objects\flash.o: D:\51\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\flash.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\flash.o: .\Start\system_stm32f10x.h
 .\objects\flash.o: .\User\stm32f10x_conf.h
 .\objects\flash.o: .\Library\stm32f10x_adc.h
@@ -30,8 +30,8 @@
 .\objects\flash.o: .\Library\stm32f10x_usart.h
 .\objects\flash.o: .\Library\stm32f10x_wwdg.h
 .\objects\flash.o: .\Library\misc.h
-.\objects\flash.o: D:\51\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\flash.o: D:\51\ARM\ARMCC\Bin\..\include\string.h
+.\objects\flash.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\flash.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\flash.o: .\User\main.h
 .\objects\flash.o: .\System\sys.h
 .\objects\flash.o: .\System\delay.h

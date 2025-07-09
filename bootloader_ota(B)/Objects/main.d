@@ -1,7 +1,7 @@
 .\objects\main.o: User\main.c
 .\objects\main.o: .\Start\stm32f10x.h
 .\objects\main.o: .\Start\core_cm3.h
-.\objects\main.o: D:\51\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\main.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\main.o: .\Start\system_stm32f10x.h
 .\objects\main.o: .\User\stm32f10x_conf.h
 .\objects\main.o: .\Library\stm32f10x_adc.h
@@ -29,8 +29,8 @@
 .\objects\main.o: .\Library\stm32f10x_wwdg.h
 .\objects\main.o: .\Library\misc.h
 .\objects\main.o: .\System\sys.h
-.\objects\main.o: D:\51\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\main.o: D:\51\ARM\ARMCC\Bin\..\include\string.h
+.\objects\main.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\main.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\main.o: .\User\main.h
 .\objects\main.o: .\System\sys.h
 .\objects\main.o: .\System\delay.h

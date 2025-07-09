@@ -50,6 +50,8 @@ int main(void)
 	usart3_printf("go to bootloader\r\n");
 	
 	bootloader_branch();
+
+	// at24c256_test();
 	
 	
     while(1)
@@ -79,7 +81,7 @@ void w25q64_test(void)
 	uint8_t wdata[256];
 	uint8_t rdata[256];
 
-	usart3_printf("w25q64 test \r\n");
+	usart3_printf("w25q64 test\r\n");
 	w25q64_sector_erase_64k(0);
 	for ( i = 0; i < 256; i++)
 	{

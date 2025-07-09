@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Wed Jul 09 01:16:46 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Jul 09 18:43:11 2025
 <BR><P>
 <H3>Maximum Stack Usage =        324 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -366,11 +366,11 @@ Global Symbols
 <P><STRONG><a name="[136]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[72]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 280 + Unknown Stack Size
-<LI>Call Chain = __rt_entry_main &rArr; main &rArr; bootloader_event_handle &rArr; bootloader_set_ota_version &rArr; bootloader_enter_info_printf &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<BR><BR>[Stack]<UL><LI>Max Depth = 288 + Unknown Stack Size
+<LI>Call Chain = __rt_entry_main &rArr; main &rArr; bootloader_event_handle &rArr; bootloader_set_ota_version &rArr; at24c256_write_ota_data &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
-<LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<BR>[Calls]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
 </UL>
 
 <P><STRONG><a name="[137]"></a>__rt_entry_postli_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000C))
@@ -531,7 +531,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_sputc
 <LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_char_common
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
 </UL>
 
 <P><STRONG><a name="[7b]"></a>__0sscanf</STRONG> (Thumb, 52 bytes, Stack size 72 bytes, __0sscanf.o(.text))
@@ -1162,12 +1162,12 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[c5]"></a>I2C_GenerateSTART</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, stm32f10x_i2c.o(i.I2C_GenerateSTART))
-<BR><BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
+<BR><BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_read_buffer
 </UL>
 
 <P><STRONG><a name="[c9]"></a>I2C_GenerateSTOP</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, stm32f10x_i2c.o(i.I2C_GenerateSTOP))
-<BR><BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
+<BR><BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_read_buffer
 </UL>
 
@@ -1184,12 +1184,12 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[c6]"></a>I2C_Send7bitAddress</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, stm32f10x_i2c.o(i.I2C_Send7bitAddress))
-<BR><BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
+<BR><BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_read_buffer
 </UL>
 
 <P><STRONG><a name="[c7]"></a>I2C_SendData</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_i2c.o(i.I2C_SendData))
-<BR><BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
+<BR><BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_read_buffer
 </UL>
 
@@ -1420,27 +1420,32 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_read_ota_data
 </UL>
 
-<P><STRONG><a name="[cb]"></a>at24c256_read_ota_data</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, at24c256.o(i.at24c256_read_ota_data))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = at24c256_read_ota_data &rArr; at24c256_read_buffer &rArr; I2C_WaitEvent &rArr; I2C_CheckEvent
+<P><STRONG><a name="[cb]"></a>at24c256_read_ota_data</STRONG> (Thumb, 60 bytes, Stack size 8 bytes, at24c256.o(i.at24c256_read_ota_data))
+<BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
+<LI>Call Chain = at24c256_read_ota_data &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_read_buffer
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_get_ota_version
+<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_ota_a_block
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_get_ota_version
 </UL>
 
-<P><STRONG><a name="[cd]"></a>at24c256_write_ota_data</STRONG> (Thumb, 36 bytes, Stack size 16 bytes, at24c256.o(i.at24c256_write_ota_data))
-<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = at24c256_write_ota_data &rArr; at24c256_write_page &rArr; I2C_WaitEvent &rArr; I2C_CheckEvent
+<P><STRONG><a name="[ce]"></a>at24c256_write_ota_data</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, at24c256.o(i.at24c256_write_ota_data))
+<BR><BR>[Stack]<UL><LI>Max Depth = 264 + Unknown Stack Size
+<LI>Call Chain = at24c256_write_ota_data &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_set_ota_version
+<BR>[Called By]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_set_ota_version
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_ota_a_block
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
 </UL>
 
-<P><STRONG><a name="[ce]"></a>at24c256_write_page</STRONG> (Thumb, 170 bytes, Stack size 24 bytes, at24c256.o(i.at24c256_write_page))
+<P><STRONG><a name="[cf]"></a>at24c256_write_page</STRONG> (Thumb, 170 bytes, Stack size 24 bytes, at24c256.o(i.at24c256_write_page))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = at24c256_write_page &rArr; I2C_WaitEvent &rArr; I2C_CheckEvent
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_SendData
@@ -1448,19 +1453,19 @@ Global Symbols
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_GenerateSTOP
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_GenerateSTART
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_WaitEvent
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
+<BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
 </UL>
 
-<P><STRONG><a name="[d0]"></a>bootloader_branch</STRONG> (Thumb, 66 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_branch))
+<P><STRONG><a name="[d1]"></a>bootloader_branch</STRONG> (Thumb, 66 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_branch))
 <BR><BR>[Stack]<UL><LI>Max Depth = 264 + Unknown Stack Size
-<LI>Call Chain = bootloader_branch &rArr; bootloader_enter_info_printf &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<LI>Call Chain = bootloader_branch &rArr; bootloader_load_a_block &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_info_printf
-<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_detect
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
-<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_load_a_block
+<BR>[Calls]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_load_a_block
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_info_printf
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_detect
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1475,27 +1480,27 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_load_a_block
 </UL>
 
-<P><STRONG><a name="[d1]"></a>bootloader_enter_detect</STRONG> (Thumb, 58 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_enter_detect))
+<P><STRONG><a name="[d2]"></a>bootloader_enter_detect</STRONG> (Thumb, 58 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_enter_detect))
 <BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
 <LI>Call Chain = bootloader_enter_detect &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
+<BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
 </UL>
 
 <P><STRONG><a name="[d4]"></a>bootloader_enter_info_printf</STRONG> (Thumb, 52 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_enter_info_printf))
 <BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
 <LI>Call Chain = bootloader_enter_info_printf &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
+<BR>[Called By]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_set_ota_version
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
 <LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_get_ota_version
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_erase_a_block
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_set_ota_version
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
 </UL>
 
 <P><STRONG><a name="[d6]"></a>bootloader_erase_a_block</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_erase_a_block))
@@ -1504,8 +1509,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_info_printf
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_erase
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
 <BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
@@ -1514,25 +1519,25 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
 <LI>Call Chain = bootloader_event_detect &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_usart3_receive_flag
 </UL>
 <BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[da]"></a>bootloader_event_handle</STRONG> (Thumb, 144 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_event_handle))
-<BR><BR>[Stack]<UL><LI>Max Depth = 280 + Unknown Stack Size
-<LI>Call Chain = bootloader_event_handle &rArr; bootloader_set_ota_version &rArr; bootloader_enter_info_printf &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<BR><BR>[Stack]<UL><LI>Max Depth = 288 + Unknown Stack Size
+<LI>Call Chain = bootloader_event_handle &rArr; bootloader_set_ota_version &rArr; at24c256_write_ota_data &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_receive
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_get_ota_version
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_erase_a_block
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_system_reset
+<BR>[Calls]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_system_reset
 <LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_set_ota_version
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_select_flash_block
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_ota_a_block
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_start
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_receive
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_get_ota_version
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_erase_a_block
 </UL>
 <BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1543,48 +1548,48 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_info_printf
 <LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_read_ota_data
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
 <BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
 
-<P><STRONG><a name="[dd]"></a>bootloader_iap_end</STRONG> (Thumb, 170 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_end))
-<BR><BR>[Stack]<UL><LI>Max Depth = 264 + Unknown Stack Size
-<LI>Call Chain = bootloader_iap_end &rArr; bootloader_enter_info_printf &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<P><STRONG><a name="[dd]"></a>bootloader_iap_end</STRONG> (Thumb, 152 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_end))
+<BR><BR>[Stack]<UL><LI>Max Depth = 272 + Unknown Stack Size
+<LI>Call Chain = bootloader_iap_end &rArr; at24c256_write_ota_data &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_info_printf
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SystemReset
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SystemReset
 <LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
-<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
 <BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
 
-<P><STRONG><a name="[dc]"></a>bootloader_iap_receive</STRONG> (Thumb, 178 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_receive))
+<P><STRONG><a name="[dc]"></a>bootloader_iap_receive</STRONG> (Thumb, 192 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_receive))
 <BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
 <LI>Call Chain = bootloader_iap_receive &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
-<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<BR>[Calls]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xmodem_crc16
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
 <LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
-<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xmodem_crc16
 </UL>
 <BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
 
-<P><STRONG><a name="[db]"></a>bootloader_iap_start</STRONG> (Thumb, 146 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_start))
+<P><STRONG><a name="[db]"></a>bootloader_iap_start</STRONG> (Thumb, 156 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_start))
 <BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
 <LI>Call Chain = bootloader_iap_start &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_erase
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_sector_erase_64k
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
 <BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
@@ -1595,21 +1600,23 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_deinit_periph
 <LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SET_SP
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
+<BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
 </UL>
 
-<P><STRONG><a name="[e1]"></a>bootloader_ota_a_block</STRONG> (Thumb, 222 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_ota_a_block))
-<BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
-<LI>Call Chain = bootloader_ota_a_block &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<P><STRONG><a name="[e1]"></a>bootloader_ota_a_block</STRONG> (Thumb, 252 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_ota_a_block))
+<BR><BR>[Stack]<UL><LI>Max Depth = 272 + Unknown Stack Size
+<LI>Call Chain = bootloader_ota_a_block &rArr; at24c256_write_ota_data &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SystemReset
+<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SystemReset
 <LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_erase
 <LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_read_data
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_read_ota_data
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
 <BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
@@ -1618,8 +1625,8 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
 <LI>Call Chain = bootloader_select_flash_block &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 <LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0sscanf
 </UL>
@@ -1627,13 +1634,13 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[de]"></a>bootloader_set_ota_version</STRONG> (Thumb, 124 bytes, Stack size 16 bytes, bootloader.o(i.bootloader_set_ota_version))
-<BR><BR>[Stack]<UL><LI>Max Depth = 272 + Unknown Stack Size
-<LI>Call Chain = bootloader_set_ota_version &rArr; bootloader_enter_info_printf &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<BR><BR>[Stack]<UL><LI>Max Depth = 280 + Unknown Stack Size
+<LI>Call Chain = bootloader_set_ota_version &rArr; at24c256_write_ota_data &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_info_printf
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 <LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0sscanf
 </UL>
@@ -1641,8 +1648,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[e2]"></a>bootloader_system_reset</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, bootloader.o(i.bootloader_system_reset))
-<BR><BR>[Calls]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SystemReset
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<BR><BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SystemReset
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
 <BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
@@ -1655,17 +1662,18 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[cf]"></a>delay_ms</STRONG> (Thumb, 72 bytes, Stack size 0 bytes, delay.o(i.delay_ms))
-<BR><BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_get_ota_version
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_erase_a_block
-<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_detect
-<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_system_reset
+<P><STRONG><a name="[d0]"></a>delay_ms</STRONG> (Thumb, 72 bytes, Stack size 0 bytes, delay.o(i.delay_ms))
+<BR><BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_system_reset
 <LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_set_ota_version
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_select_flash_block
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_ota_a_block
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_start
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_get_ota_version
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_erase_a_block
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_detect
+<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
 </UL>
 
 <P><STRONG><a name="[d7]"></a>flash_erase</STRONG> (Thumb, 48 bytes, Stack size 16 bytes, flash.o(i.flash_erase))
@@ -1675,9 +1683,9 @@ Global Symbols
 <LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FLASH_Lock
 <LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FLASH_ErasePage
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_erase_a_block
-<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_ota_a_block
+<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_ota_a_block
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_start
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_erase_a_block
 </UL>
 
 <P><STRONG><a name="[e3]"></a>flash_write</STRONG> (Thumb, 38 bytes, Stack size 16 bytes, flash.o(i.flash_write))
@@ -1687,9 +1695,9 @@ Global Symbols
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FLASH_ProgramWord
 <LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FLASH_Lock
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_receive
+<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_ota_a_block
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_receive
 <LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
-<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_ota_a_block
 </UL>
 
 <P><STRONG><a name="[d9]"></a>get_usart3_receive_flag</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, usart3.o(i.get_usart3_receive_flag))
@@ -1707,16 +1715,16 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[73]"></a>main</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 280 + Unknown Stack Size
-<LI>Call Chain = main &rArr; bootloader_event_handle &rArr; bootloader_set_ota_version &rArr; bootloader_enter_info_printf &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<BR><BR>[Stack]<UL><LI>Max Depth = 288 + Unknown Stack Size
+<LI>Call Chain = main &rArr; bootloader_event_handle &rArr; bootloader_set_ota_version &rArr; at24c256_write_ota_data &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_PriorityGroupConfig
 <LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 <LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_detect
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
 <LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_init
 <LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_init
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
 <LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_init
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart1_init
 <LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
@@ -1751,7 +1759,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_set_ss
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
+<BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
 <LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_enable
 <LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_wait_busy
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_sector_erase_64k
@@ -1763,7 +1771,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_set_ss
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
+<BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
 <LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_enable
 <LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_wait_busy
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_sector_erase_64k
@@ -1777,7 +1785,7 @@ Global Symbols
 <LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_I2S_ReceiveData
 <LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_I2S_GetFlagStatus
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
+<BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
 <LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_enable
 <LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_wait_busy
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_sector_erase_64k
@@ -1807,27 +1815,29 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d2]"></a>usart3_printf</STRONG> (Thumb, 36 bytes, Stack size 128 bytes, usart3.o(i.usart3_printf))
+<P><STRONG><a name="[cd]"></a>usart3_printf</STRONG> (Thumb, 36 bytes, Stack size 128 bytes, usart3.o(i.usart3_printf))
 <BR><BR>[Stack]<UL><LI>Max Depth = 248 + Unknown Stack Size
 <LI>Call Chain = usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_send_string
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vsprintf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_receive
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_get_ota_version
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_detect
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_erase_a_block
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_info_printf
-<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_detect
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
-<LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_set_ota_version
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_select_flash_block
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_ota_a_block
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_load_a_block
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_start
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_receive
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_get_ota_version
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_detect
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_erase_a_block
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_info_printf
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_enter_detect
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_ota_data
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_read_ota_data
 </UL>
 
 <P><STRONG><a name="[10e]"></a>usart3_send_byte</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, usart3.o(i.usart3_send_byte))
@@ -1844,7 +1854,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_send_byte
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
 </UL>
 
 <P><STRONG><a name="[f6]"></a>w25q64_init</STRONG> (Thumb, 8 bytes, Stack size 8 bytes, w25q64.o(i.w25q64_init))
@@ -1884,7 +1894,7 @@ Global Symbols
 <LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_stop
 <LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_start
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
+<BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_sector_erase_64k
 </UL>
 
@@ -1895,11 +1905,11 @@ Global Symbols
 <LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_stop
 <LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_start
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
+<BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_page
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_sector_erase_64k
 </UL>
 
-<P><STRONG><a name="[e4]"></a>w25q64_write_page</STRONG> (Thumb, 82 bytes, Stack size 24 bytes, w25q64.o(i.w25q64_write_page))
+<P><STRONG><a name="[e5]"></a>w25q64_write_page</STRONG> (Thumb, 82 bytes, Stack size 24 bytes, w25q64.o(i.w25q64_write_page))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = w25q64_write_page &rArr; w25q64_write_enable &rArr; spi_stop &rArr; spi_set_ss
 </UL>
 <BR>[Calls]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q64_write_enable
@@ -2011,14 +2021,14 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_CheckEvent
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
+<BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_write_page
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;at24c256_read_buffer
 </UL>
 
-<P><STRONG><a name="[e5]"></a>NVIC_SystemReset</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, bootloader.o(i.NVIC_SystemReset))
-<BR><BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_system_reset
+<P><STRONG><a name="[e4]"></a>NVIC_SystemReset</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, bootloader.o(i.NVIC_SystemReset))
+<BR><BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_system_reset
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_ota_a_block
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_iap_end
 </UL>
 
 <P><STRONG><a name="[3e]"></a>_printf_input_char</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, _printf_char_common.o(.text))
