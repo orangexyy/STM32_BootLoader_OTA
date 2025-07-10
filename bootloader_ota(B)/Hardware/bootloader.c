@@ -32,7 +32,8 @@ void bootloader_enter_info_printf(void)
     usart3_printf("[4]Get OTA Version\r\n");
     usart3_printf("[5]Download The Program To External FLASH\r\n");
     usart3_printf("[6]Download The Program From External FLASH\r\n");
-    usart3_printf("[7]System Reset\r\n");
+    usart3_printf("[7]Get Size Of External FLASH\r\n");
+    usart3_printf("[8]System Reset\r\n");
 }
 
 void bootloader_deinit_periph(void)
@@ -180,7 +181,6 @@ void bootloader_iap_start(void)
             xmodem_protocol_struct.receive_buf_num = 0;
             ota_info_struct.app_data_size[update_a_struct.data_block_num] = 0;
             w25q64_sector_erase_64k(update_a_struct.data_block_num);
-            usart3_printf("%d\r\n",xmodem_protocol_struct.direction_flag);
             usart3_printf("Serial IAP Download For External FLASH By Xmodem Procotol, Use Bin Format File\r\n");
             usart3_printf("Start Serial IAP Download\r\n"); 
         }
@@ -321,6 +321,20 @@ uint8_t bootloader_select_flash_block(void)
 	return 0;
 }
 
+void bootloader_get_size_of_external_flash(void)
+{
+    uint8_t i;
+
+    at24c256_read_ota_data();
+    for (i=1; i<10; i++)
+    {
+        usart3_printf("ota_info_struct.app_data_size[%d]: %d\r\n", i,ota_info_struct.app_data_size[i]); // 调试打印
+    }
+    delay_ms(1000);
+    bootloader_enter_info_printf();
+    
+}
+
 void bootloader_system_reset(void)
 {
     delay_ms(1000);
@@ -367,6 +381,11 @@ void bootloader_event_detect(void)
             bootloader_current_event = BOOTLOADER_EVENT_DOWNLOAD_FROM_EXTERNAL_FLASH;
         }
         else if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '7'))
+        {
+            usart3_printf("Get Size Of External FLASH\r\n");
+            bootloader_current_event = BOOTLOADER_EVENT_GET_SIZE_OF_EXTERNAL_FLASH;
+        }
+        else if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '8'))
         {
             usart3_printf("System Will Reset\r\n");
             bootloader_current_event = BOOTLOADER_EVENT_SYSTEM_RESET;
@@ -425,6 +444,10 @@ void bootloader_event_handle(void)
                 bootloader_ota_a_block();
                 bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位  
             }
+            break;
+        case BOOTLOADER_EVENT_GET_SIZE_OF_EXTERNAL_FLASH:
+            bootloader_get_size_of_external_flash();
+            bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
             break;
         case BOOTLOADER_EVENT_SYSTEM_RESET:
             bootloader_system_reset();

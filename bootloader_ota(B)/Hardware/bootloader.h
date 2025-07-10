@@ -16,6 +16,7 @@ typedef enum
     BOOTLOADER_EVENT_GET_OTA_VERSION,
     BOOTLOADER_EVENT_DOWNLOAD_TO_EXTERNAL_FLASH,
     BOOTLOADER_EVENT_DOWNLOAD_FROM_EXTERNAL_FLASH,
+    BOOTLOADER_EVENT_GET_SIZE_OF_EXTERNAL_FLASH,
     BOOTLOADER_EVENT_SYSTEM_RESET,
 
 } BOOTLOADER_EVENT_DATA;
@@ -56,6 +57,7 @@ void bootloader_iap_end(void);
 uint8_t bootloader_set_ota_version(void);
 void bootloader_get_ota_version(void);
 uint8_t bootloader_select_flash_block(void);
+void bootloader_get_size_of_external_flash(void);
 void bootloader_system_reset(void);
 
 void bootloader_event_detect(void);

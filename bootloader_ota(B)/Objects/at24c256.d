@@ -1,6 +1,5 @@
 .\objects\at24c256.o: Hardware\at24c256.c
-.\objects\at24c256.o: .\System\usart.h
-.\objects\at24c256.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\at24c256.o: .\System\usart3.h
 .\objects\at24c256.o: .\Start\stm32f10x.h
 .\objects\at24c256.o: .\Start\core_cm3.h
 .\objects\at24c256.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdint.h
@@ -30,9 +29,10 @@
 .\objects\at24c256.o: .\Library\stm32f10x_usart.h
 .\objects\at24c256.o: .\Library\stm32f10x_wwdg.h
 .\objects\at24c256.o: .\Library\misc.h
+.\objects\at24c256.o: Hardware\at24c256.h
 .\objects\at24c256.o: .\System\sys.h
+.\objects\at24c256.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\at24c256.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\at24c256.o: .\User\main.h
 .\objects\at24c256.o: .\System\sys.h
-.\objects\at24c256.o: Hardware\at24c256.h
 .\objects\at24c256.o: .\System\delay.h
