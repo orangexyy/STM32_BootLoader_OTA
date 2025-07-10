@@ -29,15 +29,6 @@ typedef struct
     uint8_t  direction_flag;     //0；下载到a区 1：下载到外部flash
 } XMODEM_PROTOCOL_DATA;
 
-typedef enum
-{
-    XMODEM_PROTOCOL_STATE_START,     
-    XMODEM_PROTOCOL_STATE_SEND_C,        
-    XMODEM_PROTOCOL_STATE_RECEIVE_DATA,
-    XMODEM_PROTOCOL_STATE_SEND_END,
-    XMODEM_PROTOCOL_STATE_END,  
-} XMODEM_PROTOCOL_STATE_DATA;
-
 typedef void (*set_pc)(void);
 
 uint8_t bootloader_enter_detect(uint8_t timeout);

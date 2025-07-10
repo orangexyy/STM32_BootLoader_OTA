@@ -1,5 +1,6 @@
 #include "main.h" 
 #include "delay.h"
+#include "usart2.h"
 #include "usart3.h"
 #include "at24c256.h"
 #include "w25q64.h"
@@ -39,6 +40,7 @@ void bootloader_enter_info_printf(void)
 void bootloader_deinit_periph(void)
 {
     USART_DeInit(USART1);
+		USART_DeInit(USART2);
     USART_DeInit(USART3);
     I2C_DeInit(I2C1);
     GPIO_DeInit(GPIOA);
@@ -399,6 +401,7 @@ void bootloader_event_detect(void)
             bootloader_current_event = BOOTLOADER_EVENT_IAP_END;
         }
     }
+    
 }
 
 void bootloader_event_handle(void)

@@ -29,6 +29,7 @@
 ".\objects\sys.o"
 ".\objects\timer.o"
 ".\objects\usart.o"
+".\objects\usart2.o"
 ".\objects\usart3.o"
 ".\objects\led.o"
 ".\objects\key.o"

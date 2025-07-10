@@ -3,7 +3,7 @@
 .\objects\bootloader.o: .\System\sys.h
 .\objects\bootloader.o: .\Start\stm32f10x.h
 .\objects\bootloader.o: .\Start\core_cm3.h
-.\objects\bootloader.o: D:\51\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\bootloader.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\bootloader.o: .\Start\system_stm32f10x.h
 .\objects\bootloader.o: .\User\stm32f10x_conf.h
 .\objects\bootloader.o: .\Library\stm32f10x_adc.h
@@ -30,8 +30,8 @@
 .\objects\bootloader.o: .\Library\stm32f10x_usart.h
 .\objects\bootloader.o: .\Library\stm32f10x_wwdg.h
 .\objects\bootloader.o: .\Library\misc.h
-.\objects\bootloader.o: D:\51\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\bootloader.o: D:\51\ARM\ARMCC\Bin\..\include\string.h
+.\objects\bootloader.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\bootloader.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\bootloader.o: .\User\main.h
 .\objects\bootloader.o: .\System\delay.h
 .\objects\bootloader.o: .\System\usart3.h

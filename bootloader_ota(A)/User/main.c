@@ -6,6 +6,7 @@
 #include "key.h"
 #include "oled.h"
 #include "usart.h"
+#include "usart2.h"
 #include "usart3.h"
 #include "at24c02.h"
 #include "at24c256.h"
@@ -17,7 +18,7 @@ OTA_INFO_DATA ota_info_struct;
 UPDATE_A_DATA update_a_struct;
 
 
-uint8_t rx_buffer[2565];
+char rx_buffer[265];
 
 void usart3_test(void);
 void w25q64_test(void);
@@ -28,18 +29,30 @@ int main(void)
 {
 	delay_init();
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
-	
+
 	usart1_init(115200);
+	usart2_init(115200);
 	usart3_init(115200);
 	w25q64_init();
 	at24c256_init();
+	led_init();
 	
 	usart3_printf("a block start\r\n");
+	usart2_send_string("a block start\r\n");
 	
 
     while(1)
     {
-		//usart3_test();
+			led1_on();
+			delay_ms(500);
+			led1_off();
+			delay_ms(500);
+			if(get_usart2_receive_flag())
+			{
+				usart3_printf("Rx Len: %d\r\n", usart2_rx_len);
+        usart3_printf("Rx Data: %s\r\n", usart2_rx_buffer);
+			}
+			
     }	
 }
 

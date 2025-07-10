@@ -694,6 +694,16 @@
               <FilePath>.\System\usart.h</FilePath>
             </File>
             <File>
+              <FileName>usart2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\System\usart2.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart2.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\System\usart2.h</FilePath>
+            </File>
+            <File>
               <FileName>usart3.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\System\usart3.c</FilePath>

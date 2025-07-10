@@ -34,6 +34,7 @@
 .\objects\bootloader.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\bootloader.o: .\User\main.h
 .\objects\bootloader.o: .\System\delay.h
+.\objects\bootloader.o: .\System\usart2.h
 .\objects\bootloader.o: .\System\usart3.h
 .\objects\bootloader.o: Hardware\at24c256.h
 .\objects\bootloader.o: Hardware\w25q64.h

@@ -38,6 +38,7 @@
 .\objects\main.o: .\Hardware\key.h
 .\objects\main.o: .\Hardware\oled.h
 .\objects\main.o: .\System\usart.h
+.\objects\main.o: .\System\usart2.h
 .\objects\main.o: .\System\usart3.h
 .\objects\main.o: .\Hardware\at24c02.h
 .\objects\main.o: .\Hardware\at24c256.h
