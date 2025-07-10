@@ -34,6 +34,7 @@ void bootloader_enter_info_printf(void)
     usart3_printf("[5]Download The Program To External FLASH\r\n");
     usart3_printf("[6]Download The Program From External FLASH\r\n");
     usart3_printf("[7]Get Size Of External FLASH\r\n");
+    usart3_printf("[8]Get Program From Internet And Download To External FLASH\r\n");
     usart3_printf("[8]System Reset\r\n");
 }
 
@@ -159,43 +160,57 @@ void bootloader_erase_a_block(void)
 
 void bootloader_iap_start(void)
 {
-    static uint8_t iap_to_a_start_flag = 0;
-    static uint8_t iap_to_flash_start_flag = 0;
-
     if(xmodem_protocol_struct.direction_flag == 0)
     {
-        if (iap_to_a_start_flag == 0)
-        {
-            iap_to_a_start_flag = 1;
-            flash_erase(FLASH_BLOCK_A_START_PAGE,FLASH_BLOCK_A_PAGE_NUM);
-            xmodem_protocol_struct.time = 0;
-            xmodem_protocol_struct.receive_buf_num = 0;
-            usart3_printf("Serial IAP Download For A Block By Xmodem Procotol, Use Bin Format File\r\n");
-            usart3_printf("Start Serial IAP Download\r\n");
-        }
+        flash_erase(FLASH_BLOCK_A_START_PAGE,FLASH_BLOCK_A_PAGE_NUM);
+        xmodem_protocol_struct.time = 0;
+        xmodem_protocol_struct.receive_buf_num = 0;
+        usart3_printf("Serial IAP Download To A Block, Use Bin Format File\r\n");
+        usart3_printf("Start Serial IAP Download\r\n");
     }
-    else
+    else if(xmodem_protocol_struct.direction_flag == 1)
     {
-        if (iap_to_flash_start_flag == 0)
-        {
-            iap_to_flash_start_flag = 1;
-            xmodem_protocol_struct.time = 0;
-            xmodem_protocol_struct.receive_buf_num = 0;
-            ota_info_struct.app_data_size[update_a_struct.data_block_num] = 0;
-            w25q64_sector_erase_64k(update_a_struct.data_block_num);
-            usart3_printf("Serial IAP Download For External FLASH By Xmodem Procotol, Use Bin Format File\r\n");
-            usart3_printf("Start Serial IAP Download\r\n"); 
-        }
+        xmodem_protocol_struct.time = 0;
+        xmodem_protocol_struct.receive_buf_num = 0;
+        ota_info_struct.app_data_size[update_a_struct.data_block_num] = 0;
+        w25q64_sector_erase_64k(update_a_struct.data_block_num);
+        at24c256_write_ota_data();          //擦除之后写入，查询时才会更新
+        usart3_printf("Serial IAP Download To External FLASH, Use Bin Format File\r\n");
+        usart3_printf("Start Serial IAP Download\r\n"); 
     }
+    else if(xmodem_protocol_struct.direction_flag == 2)
+    {
+        xmodem_protocol_struct.time = 0;
+        xmodem_protocol_struct.receive_buf_num = 0;
+        ota_info_struct.app_data_size[update_a_struct.data_block_num] = 0;
+        w25q64_sector_erase_64k(update_a_struct.data_block_num);
+        at24c256_write_ota_data();          //擦除之后写入，查询时才会更新 
+        usart3_printf("Get Program From Internet And Download To External FLASH\r\n");
+        usart3_printf("Start Program Download\r\n"); 
+    }
+}
+
+void bootloader_iap_ready(void)
+{
     delay_ms(10);
     if(xmodem_protocol_struct.time >= 100)
     {
-        usart3_printf("C");
+        if(xmodem_protocol_struct.direction_flag == 2)
+        {
+            usart2_send_byte('C');
+            // usart2_send_byte(0x06);
+            // usart2_send_byte(0x15);
+        }
+        else 
+        {
+            usart3_printf("C");
+        }
         xmodem_protocol_struct.time = 0;
     }
     xmodem_protocol_struct.time++;
 }
 
+//todo
 void bootloader_iap_receive(void)
 {
 
@@ -230,6 +245,7 @@ void bootloader_iap_receive(void)
     }
 }
 
+//todo
 void bootloader_iap_end(void)
 {
 
@@ -389,9 +405,17 @@ void bootloader_event_detect(void)
         }
         else if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '8'))
         {
+            usart3_printf("Get Program From Internet And Download To External FLASH\r\n");
+            usart3_printf("Select the FLASH Block(1~9):(Format:BLOCKx)\r\n");
+            xmodem_protocol_struct.direction_flag = 2;
+            bootloader_current_event = BOOTLOADER_EVENT_DOWNLOAD_TO_EXTERNAL_FLASH;
+        }
+        else if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '9'))
+        {
             usart3_printf("System Will Reset\r\n");
             bootloader_current_event = BOOTLOADER_EVENT_SYSTEM_RESET;
         }
+        //usart3 下载
         else if((usart3_rx_buffer_len == 133) && (usart3_rx_buffer[0] == 0x01))
         {
             bootloader_current_event = BOOTLOADER_EVENT_IAP_RECEIVE_DATA;
@@ -400,8 +424,17 @@ void bootloader_event_detect(void)
         {
             bootloader_current_event = BOOTLOADER_EVENT_IAP_END;
         }
+        //usart2 下载
+        else if((usart2_rx_len == 133) && (usart2_rx_buffer[0] == 0x01))
+        {
+            bootloader_current_event = BOOTLOADER_EVENT_IAP_RECEIVE_DATA;
+        }
+        else if((usart2_rx_len == 1) && (usart2_rx_buffer[0] == 0x04))
+        {
+            bootloader_current_event = BOOTLOADER_EVENT_IAP_END;
+        }
     }
-    
+
 }
 
 void bootloader_event_handle(void)
@@ -416,6 +449,10 @@ void bootloader_event_handle(void)
             break;
         case BOOTLOADER_EVENT_IAP_START: 
             bootloader_iap_start();
+            bootloader_current_event = BOOTLOADER_EVENT_IAP_READY;
+            break;
+        case BOOTLOADER_EVENT_IAP_READY: 
+            bootloader_iap_ready();
             break;
         case BOOTLOADER_EVENT_IAP_RECEIVE_DATA: 
             bootloader_iap_receive();
@@ -438,7 +475,7 @@ void bootloader_event_handle(void)
         case BOOTLOADER_EVENT_DOWNLOAD_TO_EXTERNAL_FLASH: 
             if(bootloader_select_flash_block() == 1)
             {
-                bootloader_current_event = BOOTLOADER_EVENT_IAP_START;		//清除标志位 
+                bootloader_current_event = BOOTLOADER_EVENT_IAP_START;
             }
             break;
         case BOOTLOADER_EVENT_DOWNLOAD_FROM_EXTERNAL_FLASH: 

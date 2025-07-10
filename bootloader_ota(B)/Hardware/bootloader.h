@@ -10,6 +10,7 @@ typedef enum
     BOOTLOADER_EVENT_OTA,      //OTA更新A区
     BOOTLOADER_EVENT_ERASE_A,
     BOOTLOADER_EVENT_IAP_START,
+    BOOTLOADER_EVENT_IAP_READY,
     BOOTLOADER_EVENT_IAP_RECEIVE_DATA,
     BOOTLOADER_EVENT_IAP_END,
     BOOTLOADER_EVENT_SET_OTA_VERSION,
@@ -26,7 +27,8 @@ typedef struct
     uint32_t time;   
     uint32_t receive_buf_num; 
     uint16_t receive_crc;   
-    uint8_t  direction_flag;     //0；下载到a区 1：下载到外部flash
+    uint8_t  direction_flag;     //0；下载到a区 1：下载到外部flash 2：从云平台获取固件下载到外部flash
+
 } XMODEM_PROTOCOL_DATA;
 
 typedef void (*set_pc)(void);
@@ -43,6 +45,7 @@ void bootloader_load_a_block(uint32_t addr);
 void bootloader_ota_a_block(void);
 void bootloader_erase_a_block(void);
 void bootloader_iap_start(void);
+void bootloader_iap_ready(void);
 void bootloader_iap_receive(void);
 void bootloader_iap_end(void);
 uint8_t bootloader_set_ota_version(void);

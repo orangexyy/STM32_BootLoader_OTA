@@ -71,8 +71,8 @@ void clear_usart2_rx_buffer(void)
 
 void usart2_send_byte(uint8_t Byte)		//发送单个字符
 {
-	USART_SendData(USART2,Byte);
 	while(USART_GetFlagStatus(USART2,USART_FLAG_TXE) == RESET);
+    USART_SendData(USART2,Byte);
 }
 
 void usart2_send_string(char *String)		//发送一串字符
