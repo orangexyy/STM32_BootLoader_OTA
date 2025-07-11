@@ -41,7 +41,7 @@ void bootloader_enter_info_printf(void)
 void bootloader_deinit_periph(void)
 {
     USART_DeInit(USART1);
-		USART_DeInit(USART2);
+	USART_DeInit(USART2);
     USART_DeInit(USART3);
     I2C_DeInit(I2C1);
     GPIO_DeInit(GPIOA);
@@ -87,6 +87,21 @@ uint16_t xmodem_crc16(uint8_t *data, uint16_t datalen)
 				crcinit = (crcinit << 1);
         }data++;
     }return crcinit;
+}
+
+
+uint16_t xmodem_crc16_usart2(const uint8_t *data, int length) 
+{
+    uint16_t crc = 0;
+    for (int i = 0; i < length; i++) {
+        crc = (crc << 8) ^ data[i];
+        for (int j = 0; j < 8; j++) {
+            if (crc & 0x8000)
+                crc ^= 0x1021;
+            crc <<= 1;
+        }
+    }
+    return crc;
 }
 
 
@@ -198,8 +213,6 @@ void bootloader_iap_ready(void)
         if(xmodem_protocol_struct.direction_flag == 2)
         {
             usart2_send_byte('C');
-            // usart2_send_byte(0x06);
-            // usart2_send_byte(0x15);
         }
         else 
         {
@@ -211,68 +224,210 @@ void bootloader_iap_ready(void)
 }
 
 //todo
+// void bootloader_iap_receive(void)
+// {
+//     xmodem_protocol_struct.receive_crc = xmodem_crc16(&usart3_rx_buffer[3], 128);    
+//     if(xmodem_protocol_struct.receive_crc == usart3_rx_buffer[131]*256 + usart3_rx_buffer[132])       //crc检验
+//     {
+//         xmodem_protocol_struct.receive_buf_num++;                                   //接收到的包数（一包128byte）累加
+//         //判断方向
+//         if (xmodem_protocol_struct.direction_flag == 0)
+//         {
+//             memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % (FLASH_PAGE_SIZE/128))*128], &usart3_rx_buffer[3], 128);      //复制到更新A区的buffer里
+//             if((xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128)) == 0)       //每接收到8包（1024byte）写入一页flash
+//             {
+//                 flash_write(FLASH_BLOCK_A_START_ADDR + ((xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) - 1) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, FLASH_PAGE_SIZE);
+//             }
+//         }
+//         else
+//         {
+//             memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % 2 )*128], &usart3_rx_buffer[3], 128);      //复制到更新A区的buffer里
+//             if((xmodem_protocol_struct.receive_buf_num % 2) == 0)                           //每接收到2包（256byte）写入一页外部flash
+//             {
+//                 //偏移量为前面有 data_block_num 块 64kb 换算成字节 等于块数*64*1024字节 换算成页 再除以256   最后加上当接收的页数的偏移 xmodem_protocol_struct.receive_buf_num/8 - 1)*4 + i
+//                 w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2 - 1) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
+//             }
+
+//         }
+//         usart3_printf("\x06");     //检验通过，发送ACK
+//     }
+//     else
+//     {
+//         usart3_printf("\x15");     //检验失败，发送NACK
+//     }
+// }
+
+// void bootloader_iap_receive_usart2(void)
+// {
+//     xmodem_protocol_struct.receive_crc = xmodem_crc16_usart2(&usart2_rx_buffer[3], 128);
+//     usart3_printf("xmodem_protocol_struct.receive_crc : %x   ",xmodem_protocol_struct.receive_crc);
+//     usart3_printf("crc_h : %x   ",usart2_rx_buffer[131]);
+//     usart3_printf("crc_L : %x   \r\n",usart2_rx_buffer[132]);
+//     usart3_printf("crc : %x   \r\n",usart2_rx_buffer[131]*256 + usart2_rx_buffer[132]);
+//     if(xmodem_protocol_struct.receive_crc == usart2_rx_buffer[131]*256 + usart2_rx_buffer[132])       //crc检验
+//     {
+//         xmodem_protocol_struct.receive_buf_num++;                                   //接收到的包数（一包128byte）累加
+//         memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % 2 )*128], &usart2_rx_buffer[3], 128);      //复制到更新A区的buffer里
+//         if((xmodem_protocol_struct.receive_buf_num % 2) == 0)                           //每接收到2包（256byte）写入一页外部flash
+//         {
+//             //偏移量为前面有 data_block_num 块 64kb 换算成字节 等于块数*64*1024字节 换算成页 再除以256   最后加上当接收的页数的偏移 xmodem_protocol_struct.receive_buf_num/8 - 1)*4 + i
+//             w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2 - 1) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
+//         }
+
+//         usart2_send_byte(0x06);     //检验通过，发送ACK
+//     }
+//     else
+//     {
+//         usart2_send_byte(0x15);     //检验失败，发送NACK
+//     }
+// }
+
 void bootloader_iap_receive(void)
 {
-
-    xmodem_protocol_struct.receive_crc = xmodem_crc16(&usart3_rx_buffer[3], 128);    
-    if(xmodem_protocol_struct.receive_crc == usart3_rx_buffer[131]*256 + usart3_rx_buffer[132])       //crc检验
+    if (xmodem_protocol_struct.direction_flag == 2)
     {
-        xmodem_protocol_struct.receive_buf_num++;                                   //接收到的包数（一包128byte）累加
-        //判断方向
-        if (xmodem_protocol_struct.direction_flag == 0)
+        xmodem_protocol_struct.receive_crc = xmodem_crc16_usart2(&usart2_rx_buffer[3], 128);
+        usart3_printf("xmodem_protocol_struct.receive_crc : %x   ",xmodem_protocol_struct.receive_crc);
+        usart3_printf("crc_h : %x   ",usart2_rx_buffer[131]);
+        usart3_printf("crc_L : %x   \r\n",usart2_rx_buffer[132]);
+        usart3_printf("crc : %x   \r\n",usart2_rx_buffer[131]*256 + usart2_rx_buffer[132]);
+        if(xmodem_protocol_struct.receive_crc == usart2_rx_buffer[131]*256 + usart2_rx_buffer[132])       //crc检验
         {
-            memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % (FLASH_PAGE_SIZE/128))*128], &usart3_rx_buffer[3], 128);      //复制到更新A区的buffer里
-            if((xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128)) == 0)       //每接收到8包（1024byte）写入一页flash
-            {
-                flash_write(FLASH_BLOCK_A_START_ADDR + ((xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) - 1) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, FLASH_PAGE_SIZE);
-            }
-        }
-        else
-        {
-            memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % 2 )*128], &usart3_rx_buffer[3], 128);      //复制到更新A区的buffer里
+            xmodem_protocol_struct.receive_buf_num++;                                   //接收到的包数（一包128byte）累加
+            memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % 2 )*128], &usart2_rx_buffer[3], 128);      //复制到更新A区的buffer里
             if((xmodem_protocol_struct.receive_buf_num % 2) == 0)                           //每接收到2包（256byte）写入一页外部flash
             {
                 //偏移量为前面有 data_block_num 块 64kb 换算成字节 等于块数*64*1024字节 换算成页 再除以256   最后加上当接收的页数的偏移 xmodem_protocol_struct.receive_buf_num/8 - 1)*4 + i
                 w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2 - 1) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
             }
 
+            usart2_send_byte(0x06);     //检验通过，发送ACK
         }
-        usart3_printf("\x06");     //检验通过，发送ACK
+        else
+        {
+            usart2_send_byte(0x15);     //检验失败，发送NACK
+        }
     }
     else
     {
-        usart3_printf("\x15");     //检验失败，发送NACK
+        xmodem_protocol_struct.receive_crc = xmodem_crc16(&usart3_rx_buffer[3], 128);    
+        if(xmodem_protocol_struct.receive_crc == usart3_rx_buffer[131]*256 + usart3_rx_buffer[132])       //crc检验
+        {
+            xmodem_protocol_struct.receive_buf_num++;                                   //接收到的包数（一包128byte）累加
+            //判断方向
+            if (xmodem_protocol_struct.direction_flag == 0)
+            {
+                memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % (FLASH_PAGE_SIZE/128))*128], &usart3_rx_buffer[3], 128);      //复制到更新A区的buffer里
+                if((xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128)) == 0)       //每接收到8包（1024byte）写入一页flash
+                {
+                    flash_write(FLASH_BLOCK_A_START_ADDR + ((xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) - 1) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, FLASH_PAGE_SIZE);
+                }
+            }
+            else
+            {
+                memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % 2 )*128], &usart3_rx_buffer[3], 128);      //复制到更新A区的buffer里
+                if((xmodem_protocol_struct.receive_buf_num % 2) == 0)                           //每接收到2包（256byte）写入一页外部flash
+                {
+                    //偏移量为前面有 data_block_num 块 64kb 换算成字节 等于块数*64*1024字节 换算成页 再除以256   最后加上当接收的页数的偏移 xmodem_protocol_struct.receive_buf_num/8 - 1)*4 + i
+                    w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2 - 1) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
+                }
+
+            }
+            usart3_printf("\x06");     //检验通过，发送ACK
+        }
+        else
+        {
+            usart3_printf("\x15");     //检验失败，发送NACK
+        }
     }
 }
 
 //todo
+// void bootloader_iap_end(void)
+// {
+
+//     usart3_printf("\x06");         //接收数据结束，发送ACK
+//     if (xmodem_protocol_struct.direction_flag == 0)
+//     {
+//         if((xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128)) != 0)           //处理接收到的剩余不满8包（1024byte）写入一页flash的数据
+//         { 
+//             flash_write(FLASH_BLOCK_A_START_ADDR + (xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, (xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128))*128);  
+//         }
+//         usart3_printf("Serial IAP Download Success\r\n");
+//         usart3_printf("System Will Reset\r\n");
+//         delay_ms(1000);
+//         NVIC_SystemReset();
+//     }
+//     else if (xmodem_protocol_struct.direction_flag == 1)
+//     {
+//         if((xmodem_protocol_struct.receive_buf_num % 2) != 0)                               //处理接收到的剩余不满2包（256byte）写入一页外部flash的数据
+//         {
+//             w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
+//         }
+//         ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.receive_buf_num *128;
+//         at24c256_write_ota_data();
+//         usart3_printf("Serial IAP Download Success\r\n");
+//         delay_ms(1000);
+//         bootloader_enter_info_printf();
+//     }  
+// }
+
+// void bootloader_iap_end_usart2(void)
+// {
+//     usart2_send_byte(0x06);         //接收数据结束，发送ACK
+//     if((xmodem_protocol_struct.receive_buf_num % 2) != 0)                               //处理接收到的剩余不满2包（256byte）写入一页外部flash的数据
+//     {
+//         w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
+//     }
+//     ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.receive_buf_num *128;
+//     at24c256_write_ota_data();
+//     usart3_printf("Program Download Success\r\n");
+//     delay_ms(1000);
+//     bootloader_enter_info_printf(); 
+// }
+
 void bootloader_iap_end(void)
 {
-
-    usart3_printf("\x06");         //接收数据结束，发送ACK
-    if (xmodem_protocol_struct.direction_flag == 0)
+    if (xmodem_protocol_struct.direction_flag == 2)
     {
-        if((xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128)) != 0)           //处理接收到的剩余不满8包（1024byte）写入一页flash的数据
-        { 
-            flash_write(FLASH_BLOCK_A_START_ADDR + (xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, (xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128))*128);  
-        }
-        usart3_printf("Serial IAP Download Success\r\n");
-        usart3_printf("System Will Reset\r\n");
-        delay_ms(1000);
-        NVIC_SystemReset();
-    }
-    else
-    {
+        usart2_send_byte(0x06);         //接收数据结束，发送ACK
         if((xmodem_protocol_struct.receive_buf_num % 2) != 0)                               //处理接收到的剩余不满2包（256byte）写入一页外部flash的数据
         {
             w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
         }
         ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.receive_buf_num *128;
         at24c256_write_ota_data();
-        usart3_printf("Serial IAP Download Success\r\n");
+        usart3_printf("Program Download Success\r\n");
         delay_ms(1000);
-        bootloader_enter_info_printf();
-    }  
+        bootloader_enter_info_printf(); 
+    } 
+    else
+    {
+        usart3_printf("\x06");         //接收数据结束，发送ACK
+        if (xmodem_protocol_struct.direction_flag == 0)
+        {
+            if((xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128)) != 0)           //处理接收到的剩余不满8包（1024byte）写入一页flash的数据
+            { 
+                flash_write(FLASH_BLOCK_A_START_ADDR + (xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, (xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128))*128);  
+            }
+            usart3_printf("Serial IAP Download Success\r\n");
+            usart3_printf("System Will Reset\r\n");
+            delay_ms(1000);
+            NVIC_SystemReset();
+        }
+        else if (xmodem_protocol_struct.direction_flag == 1)
+        {
+            if((xmodem_protocol_struct.receive_buf_num % 2) != 0)                               //处理接收到的剩余不满2包（256byte）写入一页外部flash的数据
+            {
+                w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
+            }
+            ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.receive_buf_num *128;
+            at24c256_write_ota_data();
+            usart3_printf("Serial IAP Download Success\r\n");
+            delay_ms(1000);
+            bootloader_enter_info_printf();
+        } 
+    }
 }
 
 uint8_t bootloader_set_ota_version(void)
@@ -362,6 +517,8 @@ void bootloader_system_reset(void)
 
 void bootloader_event_detect(void)
 {   
+    uint8_t i;
+
     if(get_usart3_receive_flag())
     {
         if((usart3_rx_buffer_len == 1) && (usart3_rx_buffer[0] == '1'))
@@ -424,8 +581,16 @@ void bootloader_event_detect(void)
         {
             bootloader_current_event = BOOTLOADER_EVENT_IAP_END;
         }
+    }
+    if(get_usart2_receive_flag())
+    {
+        usart3_printf("usart2_rx_len = %d\r\n",usart2_rx_len);
+        for(i=0; i<usart2_rx_len;i++)
+        {
+            usart3_printf("%x ",usart2_rx_buffer[i]);
+        }
         //usart2 下载
-        else if((usart2_rx_len == 133) && (usart2_rx_buffer[0] == 0x01))
+        if((usart2_rx_len == 133) && (usart2_rx_buffer[0] == 0x01))
         {
             bootloader_current_event = BOOTLOADER_EVENT_IAP_RECEIVE_DATA;
         }
@@ -455,11 +620,25 @@ void bootloader_event_handle(void)
             bootloader_iap_ready();
             break;
         case BOOTLOADER_EVENT_IAP_RECEIVE_DATA: 
-            bootloader_iap_receive();
+            // if(xmodem_protocol_struct.direction_flag == 2)
+            // {
+            //     bootloader_iap_receive_usart2();
+            // }   
+            // else 
+            // {
+                bootloader_iap_receive();
+            // }
             bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
             break;
         case BOOTLOADER_EVENT_IAP_END: 
-            bootloader_iap_end();
+            // if(xmodem_protocol_struct.direction_flag == 2)
+            // {
+            //     bootloader_iap_end_usart2();
+            // }   
+            // else 
+            // {
+                bootloader_iap_end();
+            // }
             bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
             break;  
         case BOOTLOADER_EVENT_SET_OTA_VERSION: 

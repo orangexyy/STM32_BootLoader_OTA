@@ -177,7 +177,7 @@ static void usart2_rx_dma_init(void)
         .DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte,
         .DMA_MemoryDataSize = DMA_MemoryDataSize_Byte,
         .DMA_Mode = DMA_Mode_Normal,
-        .DMA_Priority = DMA_Priority_Low,
+        .DMA_Priority = DMA_Priority_High,
         .DMA_M2M = DMA_M2M_Disable,
     };
     DMA_Init(DMA1_Channel6, &DMA_InitStructure);

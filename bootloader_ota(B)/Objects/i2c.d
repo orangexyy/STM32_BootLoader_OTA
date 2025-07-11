@@ -30,6 +30,7 @@
 .\objects\i2c.o: .\Library\stm32f10x_usart.h
 .\objects\i2c.o: .\Library\stm32f10x_wwdg.h
 .\objects\i2c.o: .\Library\misc.h
+.\objects\i2c.o: .\User\stm32f10x_it.h
 .\objects\i2c.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\i2c.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\i2c.o: .\User\main.h

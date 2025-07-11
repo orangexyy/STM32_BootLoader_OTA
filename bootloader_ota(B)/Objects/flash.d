@@ -30,6 +30,7 @@
 .\objects\flash.o: .\Library\stm32f10x_usart.h
 .\objects\flash.o: .\Library\stm32f10x_wwdg.h
 .\objects\flash.o: .\Library\misc.h
+.\objects\flash.o: .\User\stm32f10x_it.h
 .\objects\flash.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\flash.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\flash.o: .\User\main.h

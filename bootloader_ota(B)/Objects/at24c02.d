@@ -30,6 +30,7 @@
 .\objects\at24c02.o: .\Library\stm32f10x_usart.h
 .\objects\at24c02.o: .\Library\stm32f10x_wwdg.h
 .\objects\at24c02.o: .\Library\misc.h
+.\objects\at24c02.o: .\User\stm32f10x_it.h
 .\objects\at24c02.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\at24c02.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\at24c02.o: .\User\main.h

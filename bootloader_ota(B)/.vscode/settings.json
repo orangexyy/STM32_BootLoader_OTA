@@ -11,6 +11,8 @@
         "oled.h": "c",
         "key.h": "c",
         "led.h": "c",
-        "bootloader.h": "c"
+        "bootloader.h": "c",
+        "main.h": "c",
+        "stm32f10x_it.h": "c"
     }
 }

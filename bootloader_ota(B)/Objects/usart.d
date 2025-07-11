@@ -29,6 +29,7 @@
 .\objects\usart.o: .\Library\stm32f10x_usart.h
 .\objects\usart.o: .\Library\stm32f10x_wwdg.h
 .\objects\usart.o: .\Library\misc.h
+.\objects\usart.o: .\User\stm32f10x_it.h
 .\objects\usart.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\usart.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\usart.o: .\User\main.h

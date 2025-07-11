@@ -30,6 +30,7 @@
 .\objects\timer.o: .\Library\stm32f10x_usart.h
 .\objects\timer.o: .\Library\stm32f10x_wwdg.h
 .\objects\timer.o: .\Library\misc.h
+.\objects\timer.o: .\User\stm32f10x_it.h
 .\objects\timer.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\timer.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\timer.o: .\User\main.h

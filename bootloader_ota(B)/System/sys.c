@@ -1,23 +1,23 @@
 #include "sys.h"
 
-//THUMB╓╕┴ю▓╗╓з│╓╗у▒р─┌┴к
-//▓╔╙├╚ч╧┬╖╜╖и╩╡╧╓╓┤╨╨╗у▒р╓╕┴юWFI  
+//THUMB╓╕я┐╜ю▓╗╓зя┐╜╓╗я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜
+//я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜┬╖я┐╜я┐╜я┐╜╩╡я┐╜я┐╜╓┤я┐╜╨╗я┐╜я┐╜╓╕я┐╜я┐╜WFI  
 void WFI_SET(void)
 {
 	__ASM volatile("wfi");		  
 }
-//╣╪▒╒╦∙╙╨╓╨╢╧
+//я┐╜╪▒я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜╨╢я┐╜
 void INTX_DISABLE(void)
 {		  
 	__ASM volatile("cpsid i");
 }
-//┐к╞Ї╦∙╙╨╓╨╢╧
+//я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜╨╢я┐╜
 void INTX_ENABLE(void)
 {
 	__ASM volatile("cpsie i");		  
 }
-//╔ш╓├╒╗╢е╡╪╓╖
-//addr:╒╗╢е╡╪╓╖
+//я┐╜я┐╜я┐╜я┐╜╒╗я┐╜я┐╜я┐╜я┐╜╓╖
+//addr:╒╗я┐╜я┐╜я┐╜я┐╜╓╖
 __asm void MSR_MSP(u32 addr) 
 {
     MSR MSP, r0 			//set Main Stack value

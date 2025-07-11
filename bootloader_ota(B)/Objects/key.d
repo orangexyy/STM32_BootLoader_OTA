@@ -30,6 +30,7 @@
 .\objects\key.o: .\Library\stm32f10x_usart.h
 .\objects\key.o: .\Library\stm32f10x_wwdg.h
 .\objects\key.o: .\Library\misc.h
+.\objects\key.o: .\User\stm32f10x_it.h
 .\objects\key.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\key.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\key.o: .\User\main.h

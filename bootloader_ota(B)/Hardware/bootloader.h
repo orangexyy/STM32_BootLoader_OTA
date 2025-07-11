@@ -26,8 +26,11 @@ typedef struct
 {
     uint32_t time;   
     uint32_t receive_buf_num; 
+    uint32_t total_size;        // 固件总大小
+    uint32_t received_size;     // 已接收大小
     uint16_t receive_crc;   
-    uint8_t  direction_flag;     //0；下载到a区 1：下载到外部flash 2：从云平台获取固件下载到外部flash
+    uint8_t  direction_flag;        //0；下载到a区 1：下载到外部flash 2：从云平台获取固件下载到外部flash
+
 
 } XMODEM_PROTOCOL_DATA;
 
@@ -39,6 +42,7 @@ void bootloader_deinit_periph(void);
 void bootloader_branch(void);
 
 uint16_t xmodem_crc16(uint8_t *data, uint16_t datalen);
+uint16_t xmodem_crc16_usart2(const uint8_t *data, int length);
 
 __asm void SET_SP(uint32_t addr);
 void bootloader_load_a_block(uint32_t addr);
@@ -47,7 +51,9 @@ void bootloader_erase_a_block(void);
 void bootloader_iap_start(void);
 void bootloader_iap_ready(void);
 void bootloader_iap_receive(void);
+void bootloader_iap_receive_usart2(void);
 void bootloader_iap_end(void);
+void bootloader_iap_end_usart2(void);
 uint8_t bootloader_set_ota_version(void);
 void bootloader_get_ota_version(void);
 uint8_t bootloader_select_flash_block(void);

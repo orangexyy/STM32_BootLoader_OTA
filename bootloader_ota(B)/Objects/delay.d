@@ -30,6 +30,7 @@
 .\objects\delay.o: .\Library\stm32f10x_usart.h
 .\objects\delay.o: .\Library\stm32f10x_wwdg.h
 .\objects\delay.o: .\Library\misc.h
+.\objects\delay.o: .\User\stm32f10x_it.h
 .\objects\delay.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\delay.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\delay.o: .\User\main.h
