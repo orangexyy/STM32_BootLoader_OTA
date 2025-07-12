@@ -35,5 +35,3 @@
 .\objects\timer.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\timer.o: .\User\main.h
 .\objects\timer.o: .\System\sys.h
-.\objects\timer.o: System\usart.h
-.\objects\timer.o: .\Hardware\led.h

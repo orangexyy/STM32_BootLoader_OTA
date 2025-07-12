@@ -124,6 +124,7 @@ static void usart2_periph_init(unsigned int bound)
 {
     /*初始化发送接收引脚，PA2(USART2_TX)，PA3(USART2_RX)。*/
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
     GPIO_InitTypeDef GPIO_InitStructure;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;

@@ -1,24 +1,17 @@
 #ifndef __TIMER_H
 #define __TIMER_H
+
 #include "sys.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK战舰STM32开发板
-//定时器 驱动代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//修改日期:2012/9/3
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2009-2019
-//All rights reserved									  
-//////////////////////////////////////////////////////////////////////////////////   
+#include "stm32f10x.h"
 
-extern uint32_t time1_cntr;
-extern uint32_t time2_cntr;
-extern uint16_t Study_time;
+//瀹氭椂鍛ㄦ湡 = 鏃堕挓棰戠巼 / (ARR + 1) / (PSC + 1) (s)
+//瀹氭椂棰戠巼 = 1 / 瀹氭椂鍛ㄦ湡
 
-void TIM4_1ms_Init(void);
-void TIM3_Int_Init(u16 arr,u16 psc);
- 
+
+void timer3_init(void);
+void timer3_start(void);
+void timer3_stop(void);
+uint32_t get_timer3_tick(void);
+void set_timer3_tick(uint32_t tick);
+
 #endif

@@ -41,6 +41,7 @@
 .\objects\main.o: .\System\usart.h
 .\objects\main.o: .\System\usart2.h
 .\objects\main.o: .\System\usart3.h
+.\objects\main.o: .\System\timer.h
 .\objects\main.o: .\Hardware\at24c02.h
 .\objects\main.o: .\Hardware\at24c256.h
 .\objects\main.o: .\Hardware\w25q64.h

@@ -218,7 +218,7 @@ ARM Macro Assembler    Page 4
 ]
   131 00000000                 IMPORT           __main
   132 00000000                 IMPORT           SystemInit
-  133 00000000 4809    w       LDR              R0, =SystemInit
+  133 00000000 4809            LDR              R0, =SystemInit
   134 00000002 4780            BLX              R0
   135 00000004 4809            LDR              R0, =__main
   136 00000006 4700            BX               R0
@@ -1141,15 +1141,7 @@ Symbol: __user_initial_stackheap
    Uses
       At line 291 in file Start\startup_stm32f10x_md.s
 Comment: __user_initial_stackheap used once
-w 00000000
-
-Symbol: w
-   Definitions
-      At line 133 in file Start\startup_stm32f10x_md.s
-   Uses
-      None
-Comment: w unused
-57 symbols
+56 symbols
 
 
 
@@ -1214,4 +1206,4 @@ Symbol: __use_two_region_memory
       None
 Comment: __use_two_region_memory unused
 3 symbols
-410 symbols in table
+409 symbols in table

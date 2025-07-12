@@ -1,5 +1,7 @@
 #ifndef __UASRT3_H
 #define __UASRT3_H
+
+#include "sys.h"
 #include "stm32f10x.h"
 
 #define USART_RX_SIZE   256

@@ -12,6 +12,7 @@ typedef enum
     BOOTLOADER_EVENT_IAP_START,
     BOOTLOADER_EVENT_IAP_READY,
     BOOTLOADER_EVENT_IAP_RECEIVE_DATA,
+    BOOTLOADER_EVENT_IAP_RECEIVE_DETECT,
     BOOTLOADER_EVENT_IAP_END,
     BOOTLOADER_EVENT_SET_OTA_VERSION,
     BOOTLOADER_EVENT_GET_OTA_VERSION,
@@ -26,11 +27,12 @@ typedef struct
 {
     uint32_t time;   
     uint32_t receive_buf_num; 
-    uint32_t total_size;        // 固件总大小
-    uint32_t received_size;     // 已接收大小
+    uint32_t total_size;            // 固件总大小
+    uint32_t received_size;         // 已接收大小
     uint16_t receive_crc;   
     uint8_t  direction_flag;        //0；下载到a区 1：下载到外部flash 2：从云平台获取固件下载到外部flash
-
+    uint8_t start_flag;  
+    uint8_t timeout_count;      
 
 } XMODEM_PROTOCOL_DATA;
 

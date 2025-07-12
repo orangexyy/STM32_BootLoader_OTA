@@ -1,91 +1,48 @@
 #include "timer.h" 
-#include "usart.h"
-#include "led.h"
 
-
-uint32_t time1_cntr;
-uint32_t time2_cntr;
-uint16_t Study_time = 0;
-
-//Í¨ÓÃ¶¨Ê±Æ÷7ÖĞ¶Ï³õÊ¼»¯
-//ÕâÀïÊ±ÖÓÑ¡ÔñÎªAPB1µÄ2±¶£¬¶øAPB1Îª42M
-//arr£º×Ô¶¯ÖØ×°Öµ¡£
-//psc£ºÊ±ÖÓÔ¤·ÖÆµÊı
-//¶¨Ê±Æ÷Òç³öÊ±¼ä¼ÆËã·½·¨:Tout=((arr+1)*(psc+1))/Ft us.
-//Ft=¶¨Ê±Æ÷¹¤×÷ÆµÂÊ,µ¥Î»:Mhz 
-//Í¨ÓÃ¶¨Ê±Æ÷ÖĞ¶Ï³õÊ¼»¯
-//ÕâÀïÊ¼ÖÕÑ¡ÔñÎªAPB1µÄ2±¶£¬¶øAPB1Îª36M
-//arr£º×Ô¶¯ÖØ×°Öµ¡£
-//psc£ºÊ±ÖÓÔ¤·ÖÆµÊı		 
-void TIM3_Int_Init(u16 arr,u16 psc)
+//å®šæ—¶å‘¨æœŸ = æ—¶é’Ÿé¢‘ç‡ / (ARR + 1) / (PSC + 1)
+//å®šæ—¶é¢‘ç‡ = 1 / å®šæ—¶
+void timer3_init(void)
 {	
 	NVIC_InitTypeDef NVIC_InitStructure;
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);//TIM3Ê±ÖÓÊ¹ÄÜ    
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);   
 	
-	//¶¨Ê±Æ÷TIM3³õÊ¼»¯
-	TIM_TimeBaseStructure.TIM_Period = arr; //ÉèÖÃÔÚÏÂÒ»¸ö¸üĞÂÊÂ¼ş×°Èë»î¶¯µÄ×Ô¶¯ÖØ×°ÔØ¼Ä´æÆ÷ÖÜÆÚµÄÖµ	
-	TIM_TimeBaseStructure.TIM_Prescaler =psc; //ÉèÖÃÓÃÀ´×÷ÎªTIMxÊ±ÖÓÆµÂÊ³ıÊıµÄÔ¤·ÖÆµÖµ
-	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //ÉèÖÃÊ±ÖÓ·Ö¸î:TDTS = Tck_tim
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIMÏòÉÏ¼ÆÊıÄ£Ê½
-	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); //¸ù¾İÖ¸¶¨µÄ²ÎÊı³õÊ¼»¯TIMxµÄÊ±¼ä»ùÊıµ¥Î»
+	TIM_TimeBaseStructure.TIM_Period = 1000-1; 	
+	TIM_TimeBaseStructure.TIM_Prescaler =72-1; 
+	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; 
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
+	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); 
  
-	TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE ); //Ê¹ÄÜÖ¸¶¨µÄTIM3ÖĞ¶Ï,ÔÊĞí¸üĞÂÖĞ¶Ï
+	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); 
 	
-	TIM_Cmd(TIM3,ENABLE);//¿ªÆô¶¨Ê±Æ÷7
+	TIM_Cmd(TIM3,ENABLE);
 	
 	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0 ;//ÇÀÕ¼ÓÅÏÈ¼¶0
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;		//×ÓÓÅÏÈ¼¶2
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQÍ¨µÀÊ¹ÄÜ
-	NVIC_Init(&NVIC_InitStructure);	//¸ù¾İÖ¸¶¨µÄ²ÎÊı³õÊ¼»¯VIC¼Ä´æÆ÷
-	
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=2 ;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;		
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			
+	NVIC_Init(&NVIC_InitStructure);
 }
 
-void TIM4_1ms_Init(void)  //(u16 arr,u16 psc)
-{
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
-	NVIC_InitTypeDef NVIC_InitStructure;
-	
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4,ENABLE);
-	
-	NVIC_InitStructure.NVIC_IRQChannel=TIM4_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
-	NVIC_Init(&NVIC_InitStructure); 
-	
-	TIM_TimeBaseInitStructure.TIM_Period = 10000-1;      //1s
-	TIM_TimeBaseInitStructure.TIM_Prescaler=7200-1;       //72·ÖÆµ=1MHz
-	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up;
-	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1;
-	TIM_TimeBaseInit(TIM4,&TIM_TimeBaseInitStructure);
-	TIM_ITConfig(TIM4,TIM_IT_Update,ENABLE);
-	TIM_Cmd(TIM4,DISABLE);
-}
 
-////¶¨Ê±Æ÷3ÖĞ¶Ï·şÎñ³ÌĞò		    
-//void TIM3_IRQHandler(void)
-//{ 	
-//	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)//ÊÇ¸üĞÂÖĞ¶Ï
-//	{	 			   
-//		USART3_RX_STA|=1<<15;	//±ê¼Ç½ÓÊÕÍê³É
-//		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //Çå³ıTIM3¸üĞÂÖĞ¶Ï±êÖ¾    
-//		TIM_Cmd(TIM3, DISABLE);  //¹Ø±ÕTIM3 
-//	}	    
-//}
 
-//¶¨Ê±Æ÷ÖĞ¶Ï·şÎñº¯Êı
-void TIM4_IRQHandler(void)
-{
-	if(TIM_GetITStatus(TIM4,TIM_IT_Update)==SET) //Òç³öÖĞ¶Ï
-	{
-		time1_cntr++;
-		time2_cntr++;
-		Study_time++;
-		led1_toggle();
+//å®šæ—¶å™¨3ä¸­æ–­æœåŠ¡ç¨‹åº		    
+void TIM3_IRQHandler(void)
+{ 	
+	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)//æ˜¯æ›´æ–°ä¸­æ–­
+	{	 			   
+		TIM_ClearITPendingBit(TIM3,TIM_IT_Update); //æ¸…é™¤ä¸­æ–­æ ‡å¿—ä½
+		
+       
+
 	}
-	TIM_ClearITPendingBit(TIM4,TIM_IT_Update); //Çå³ıÖĞ¶Ï±êÖ¾Î»
 }
+
+
+
+
 
 
 

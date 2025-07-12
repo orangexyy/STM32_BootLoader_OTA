@@ -8,14 +8,20 @@
 #include "usart.h"
 #include "usart2.h"
 #include "usart3.h"
+#include "timer.h" 
 #include "at24c02.h"
 #include "at24c256.h"
 #include "w25q64.h"
 #include "flash.h"
 #include "bootloader.h" 
 
+
+uint32_t system_tick = 0;       // 系统运行时间(ms)
+uint32_t last_rx_tick = 0;      // 上次接收到数据的时间戳
+
 OTA_INFO_DATA ota_info_struct;
 UPDATE_A_DATA update_a_struct;
+
 
 void usart2_test(void);
 void usart3_test(void);
@@ -25,16 +31,28 @@ void flash_test(void);
 
 int main(void)
 {
-//	uint8_t i;
 	
 	delay_init();
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
 	
+	usart3_init(115200);
 	usart1_init(115200);
 	usart2_init(115200);
-	usart3_init(115200);
 	w25q64_init();
 	at24c256_init();
+
+	usart3_printf("go to bootloader\r\n");
+	
+	bootloader_branch();
+	
+	
+    while(1)
+    {
+		bootloader_event_detect();
+		bootloader_event_handle();
+    }	
+}
+
 
 	// ota_info_struct.flag = 0x11223344;
 	// for(i=0; i<11; i++)
@@ -49,20 +67,6 @@ int main(void)
 	// {
 	// 	usart3_printf("%x\r\n",ota_info_struct.app_data_size[i]);
 	// }
-	
-	usart3_printf("go to bootloader\r\n");
-	
-	bootloader_branch();
-
-	// at24c256_test();
-	
-	
-    while(1)
-    {
-		bootloader_event_detect();
-		bootloader_event_handle();
-    }	
-}
 
 
 void usart3_test(void)

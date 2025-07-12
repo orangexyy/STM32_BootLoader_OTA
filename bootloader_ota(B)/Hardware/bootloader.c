@@ -2,6 +2,7 @@
 #include "delay.h"
 #include "usart2.h"
 #include "usart3.h"
+#include "timer.h" 
 #include "at24c256.h"
 #include "w25q64.h"
 #include "flash.h"
@@ -195,6 +196,7 @@ void bootloader_iap_start(void)
     }
     else if(xmodem_protocol_struct.direction_flag == 2)
     {
+        xmodem_protocol_struct.start_flag = 0;
         xmodem_protocol_struct.time = 0;
         xmodem_protocol_struct.receive_buf_num = 0;
         ota_info_struct.app_data_size[update_a_struct.data_block_num] = 0;
@@ -229,30 +231,27 @@ void bootloader_iap_receive(void)
 {
     if (xmodem_protocol_struct.direction_flag == 2)
     {
-
+        
         static uint8_t progress = 0;
-        static uint8_t start_flag = 0;
         static uint8_t print_counter = 3; 
 
-        if(start_flag == 0)
+        if(xmodem_protocol_struct.start_flag == 0)
         {
-            start_flag = 1;
+            xmodem_protocol_struct.start_flag = 1;
             usart3_printf("\r\nStart Program Download\r\n");
         }
-        
-        // usart3_printf("xmodem_protocol_struct.receive_crc : %x   ",xmodem_protocol_struct.receive_crc);
-        // usart3_printf("crc_h : %x   ",usart2_rx_buffer[131]);
-        // usart3_printf("crc_L : %x   \r\n",usart2_rx_buffer[132]);
-        // usart3_printf("crc : %x   \r\n",usart2_rx_buffer[131]*256 + usart2_rx_buffer[132]);
+
+        system_tick = 0;
+        xmodem_protocol_struct.timeout_count = 0;
 
         xmodem_protocol_struct.receive_crc = xmodem_crc16_usart2(&usart2_rx_buffer[3], 128);
         if(xmodem_protocol_struct.receive_crc == usart2_rx_buffer[131]*256 + usart2_rx_buffer[132])       //crc检验
         {
             print_counter++;
-            // //总字节大小、已接收字节大小、进度
             if (print_counter >= 5 || progress >= 95) 
             {
                 print_counter = 0;
+                //总字节大小、已接收字节大小、进度
                 xmodem_protocol_struct.total_size = (uint32_t)usart2_rx_buffer[133] << 24 | (uint32_t)usart2_rx_buffer[134] << 16 | (uint32_t)usart2_rx_buffer[135] << 8 | (uint32_t)usart2_rx_buffer[136];
                 xmodem_protocol_struct.received_size = (uint32_t)usart2_rx_buffer[137] << 24 | (uint32_t)usart2_rx_buffer[138] << 16 | (uint32_t)usart2_rx_buffer[139] << 8 | (uint32_t)usart2_rx_buffer[140];
                 progress = xmodem_protocol_struct.received_size * 100 / xmodem_protocol_struct.total_size;
@@ -324,6 +323,7 @@ void bootloader_iap_end(void)
         }
         ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.total_size;
         at24c256_write_ota_data();
+        delay_ms(100);
         usart3_printf("Program Download Success\r\n");
         delay_ms(1000);
         bootloader_enter_info_printf(); 
@@ -338,7 +338,7 @@ void bootloader_iap_end(void)
                 flash_write(FLASH_BLOCK_A_START_ADDR + (xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, (xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128))*128);  
             }
             delay_ms(100);
-            usart3_printf("Serial IAP Download Success\r\n");
+            usart3_printf("Program Download Success\r\n");
             usart3_printf("System Will Reset\r\n");
             delay_ms(1000);
             NVIC_SystemReset();
@@ -351,7 +351,8 @@ void bootloader_iap_end(void)
             }
             ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.receive_buf_num *128;
             at24c256_write_ota_data();
-            usart3_printf("Serial IAP Download Success\r\n");
+            delay_ms(100);
+            usart3_printf("Program Download Success\r\n");
             delay_ms(1000);
             bootloader_enter_info_printf();
         } 
@@ -532,9 +533,11 @@ void bootloader_event_detect(void)
 
 void bootloader_event_handle(void)
 { 
+    
     switch(bootloader_current_event)
     {
         case BOOTLOADER_EVENT_NONE:
+            
             break;
         case BOOTLOADER_EVENT_ERASE_A:
             bootloader_erase_a_block();
@@ -549,11 +552,36 @@ void bootloader_event_handle(void)
             break;
         case BOOTLOADER_EVENT_IAP_RECEIVE_DATA: 
             bootloader_iap_receive();
-            bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
+            bootloader_current_event = BOOTLOADER_EVENT_IAP_RECEIVE_DETECT;		//清除标志位 
             break;
         case BOOTLOADER_EVENT_IAP_END: 
             bootloader_iap_end();
             bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
+            break;  
+        case BOOTLOADER_EVENT_IAP_RECEIVE_DETECT: 
+            //判断是否是从云平台下载
+            if((xmodem_protocol_struct.start_flag == 1) && (xmodem_protocol_struct.direction_flag == 2))
+            {
+                system_tick++;
+                if (system_tick - 0 > 5000000) 
+                {
+                    system_tick = 0;  // 重置时间戳，避免重复触发
+                    xmodem_protocol_struct.timeout_count++;
+                    usart3_printf("Warning : Download Timeout %d/3 \r\n",xmodem_protocol_struct.timeout_count);
+                    if(xmodem_protocol_struct.timeout_count >= 3)
+                    {
+                        xmodem_protocol_struct.timeout_count = 0;
+                        usart3_printf("Error : ESP8266 Disconnected, Please Reset Download \r\n");
+                        delay_ms(1000);
+                        bootloader_enter_info_printf();
+                        bootloader_current_event = BOOTLOADER_EVENT_NONE;
+                    }
+                }
+            }
+            else
+            {
+                bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位
+            }
             break;  
         case BOOTLOADER_EVENT_SET_OTA_VERSION: 
             if(bootloader_set_ota_version() == 1)

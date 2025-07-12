@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include <main.h>
+#include "main.h"
 
 //0,不支持ucos
 //1,支持ucos

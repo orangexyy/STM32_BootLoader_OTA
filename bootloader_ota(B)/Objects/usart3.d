@@ -1,5 +1,6 @@
 .\objects\usart3.o: System\usart3.c
 .\objects\usart3.o: System\usart3.h
+.\objects\usart3.o: System\sys.h
 .\objects\usart3.o: .\Start\stm32f10x.h
 .\objects\usart3.o: .\Start\core_cm3.h
 .\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,7 +30,10 @@
 .\objects\usart3.o: .\Library\stm32f10x_usart.h
 .\objects\usart3.o: .\Library\stm32f10x_wwdg.h
 .\objects\usart3.o: .\Library\misc.h
+.\objects\usart3.o: .\User\stm32f10x_it.h
+.\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
+.\objects\usart3.o: .\User\main.h
+.\objects\usart3.o: .\System\sys.h
 .\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdarg.h
-.\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
-.\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h

@@ -30,6 +30,9 @@ typedef struct
 } UPDATE_A_DATA;
 
 
+extern uint32_t system_tick;       // 系统滴答计数器（1ms递增）
+extern uint32_t last_rx_tick;
+
 extern OTA_INFO_DATA ota_info_struct;
 extern UPDATE_A_DATA update_a_struct;
 
