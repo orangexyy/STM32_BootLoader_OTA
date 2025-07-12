@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Jul 11 18:49:00 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sat Jul 12 10:52:46 2025
 <BR><P>
 <H3>Maximum Stack Usage =        324 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -18,7 +18,8 @@ Functions with no stack information
 <P>
 <H3>
 Mutually Recursive functions
-</H3> <LI><a href="#[20]">ADC1_2_IRQHandler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[20]">ADC1_2_IRQHandler</a><BR>
+</H3> <LI><a href="#[d]">SysTick_Handler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[d]">SysTick_Handler</a><BR>
+ <LI><a href="#[20]">ADC1_2_IRQHandler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[20]">ADC1_2_IRQHandler</a><BR>
 </UL>
 <P>
 <H3>
@@ -60,7 +61,7 @@ Function Pointers
  <LI><a href="#[31]">SPI1_IRQHandler</a> from startup_stm32f10x_md.o(.text) referenced from startup_stm32f10x_md.o(RESET)
  <LI><a href="#[32]">SPI2_IRQHandler</a> from startup_stm32f10x_md.o(.text) referenced from startup_stm32f10x_md.o(RESET)
  <LI><a href="#[a]">SVC_Handler</a> from stm32f10x_it.o(i.SVC_Handler) referenced from startup_stm32f10x_md.o(RESET)
- <LI><a href="#[d]">SysTick_Handler</a> from delay.o(i.SysTick_Handler) referenced from startup_stm32f10x_md.o(RESET)
+ <LI><a href="#[d]">SysTick_Handler</a> from startup_stm32f10x_md.o(.text) referenced from startup_stm32f10x_md.o(RESET)
  <LI><a href="#[39]">SystemInit</a> from system_stm32f10x.o(i.SystemInit) referenced from startup_stm32f10x_md.o(.text)
  <LI><a href="#[10]">TAMPER_IRQHandler</a> from startup_stm32f10x_md.o(.text) referenced from startup_stm32f10x_md.o(RESET)
  <LI><a href="#[26]">TIM1_BRK_IRQHandler</a> from startup_stm32f10x_md.o(.text) referenced from startup_stm32f10x_md.o(RESET)
@@ -394,6 +395,13 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[4]"></a>Reset_Handler</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, startup_stm32f10x_md.o(.text))
+<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_md.o(RESET)
+</UL>
+<P><STRONG><a name="[d]"></a>SysTick_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, startup_stm32f10x_md.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
+</UL>
+<BR>[Called By]<UL><LI><a href="#[d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
+</UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_md.o(RESET)
 </UL>
 <P><STRONG><a name="[20]"></a>ADC1_2_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f10x_md.o(.text))
@@ -1284,9 +1292,6 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
 </UL>
 
-<P><STRONG><a name="[d]"></a>SysTick_Handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, delay.o(i.SysTick_Handler))
-<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_md.o(RESET)
-</UL>
 <P><STRONG><a name="[39]"></a>SystemInit</STRONG> (Thumb, 78 bytes, Stack size 8 bytes, system_stm32f10x.o(i.SystemInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = SystemInit &rArr; SetSysClock &rArr; SetSysClockTo72
 </UL>
@@ -1544,7 +1549,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
 
-<P><STRONG><a name="[d8]"></a>bootloader_event_detect</STRONG> (Thumb, 452 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_event_detect))
+<P><STRONG><a name="[d8]"></a>bootloader_event_detect</STRONG> (Thumb, 416 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_event_detect))
 <BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
 <LI>Call Chain = bootloader_event_detect &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -1598,7 +1603,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
 
-<P><STRONG><a name="[df]"></a>bootloader_iap_end</STRONG> (Thumb, 252 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_end))
+<P><STRONG><a name="[df]"></a>bootloader_iap_end</STRONG> (Thumb, 256 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_end))
 <BR><BR>[Stack]<UL><LI>Max Depth = 264 + Unknown Stack Size
 <LI>Call Chain = bootloader_iap_end &rArr; bootloader_enter_info_printf &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -1614,7 +1619,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
 
-<P><STRONG><a name="[dd]"></a>bootloader_iap_ready</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_ready))
+<P><STRONG><a name="[dd]"></a>bootloader_iap_ready</STRONG> (Thumb, 62 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_ready))
 <BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
 <LI>Call Chain = bootloader_iap_ready &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -1625,7 +1630,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_event_handle
 </UL>
 
-<P><STRONG><a name="[de]"></a>bootloader_iap_receive</STRONG> (Thumb, 384 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_receive))
+<P><STRONG><a name="[de]"></a>bootloader_iap_receive</STRONG> (Thumb, 528 bytes, Stack size 8 bytes, bootloader.o(i.bootloader_iap_receive))
 <BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
 <LI>Call Chain = bootloader_iap_receive &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -1656,9 +1661,9 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
 <LI>Call Chain = bootloader_load_a_block &rArr; usart3_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
+<BR>[Calls]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SET_SP
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart3_printf
 <LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_deinit_periph
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SET_SP
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bootloader_branch
 </UL>

@@ -6,7 +6,6 @@ void SysTick_Init(void);
 void delay_init(void);
 void delay_ms(u16 nms);
 void delay_us(u32 nus);
-uint32_t GetTick(void);
 
 #endif
 

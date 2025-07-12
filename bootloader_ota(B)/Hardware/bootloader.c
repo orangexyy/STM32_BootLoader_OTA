@@ -35,7 +35,7 @@ void bootloader_enter_info_printf(void)
     usart3_printf("[6]Download The Program From External FLASH\r\n");
     usart3_printf("[7]Get Size Of External FLASH\r\n");
     usart3_printf("[8]Get Program From Internet And Download To External FLASH\r\n");
-    usart3_printf("[8]System Reset\r\n");
+    usart3_printf("[9]System Reset\r\n");
 }
 
 void bootloader_deinit_periph(void)
@@ -201,7 +201,7 @@ void bootloader_iap_start(void)
         w25q64_sector_erase_64k(update_a_struct.data_block_num);
         at24c256_write_ota_data();          //擦除之后写入，查询时才会更新 
         usart3_printf("Get Program From Internet And Download To External FLASH\r\n");
-        usart3_printf("Start Program Download\r\n"); 
+        usart3_printf("Waiting For The Download");
     }
 }
 
@@ -213,6 +213,7 @@ void bootloader_iap_ready(void)
         if(xmodem_protocol_struct.direction_flag == 2)
         {
             usart2_send_byte('C');
+            usart3_printf("."); 
         }
         else 
         {
@@ -223,76 +224,45 @@ void bootloader_iap_ready(void)
     xmodem_protocol_struct.time++;
 }
 
-//todo
-// void bootloader_iap_receive(void)
-// {
-//     xmodem_protocol_struct.receive_crc = xmodem_crc16(&usart3_rx_buffer[3], 128);    
-//     if(xmodem_protocol_struct.receive_crc == usart3_rx_buffer[131]*256 + usart3_rx_buffer[132])       //crc检验
-//     {
-//         xmodem_protocol_struct.receive_buf_num++;                                   //接收到的包数（一包128byte）累加
-//         //判断方向
-//         if (xmodem_protocol_struct.direction_flag == 0)
-//         {
-//             memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % (FLASH_PAGE_SIZE/128))*128], &usart3_rx_buffer[3], 128);      //复制到更新A区的buffer里
-//             if((xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128)) == 0)       //每接收到8包（1024byte）写入一页flash
-//             {
-//                 flash_write(FLASH_BLOCK_A_START_ADDR + ((xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) - 1) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, FLASH_PAGE_SIZE);
-//             }
-//         }
-//         else
-//         {
-//             memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % 2 )*128], &usart3_rx_buffer[3], 128);      //复制到更新A区的buffer里
-//             if((xmodem_protocol_struct.receive_buf_num % 2) == 0)                           //每接收到2包（256byte）写入一页外部flash
-//             {
-//                 //偏移量为前面有 data_block_num 块 64kb 换算成字节 等于块数*64*1024字节 换算成页 再除以256   最后加上当接收的页数的偏移 xmodem_protocol_struct.receive_buf_num/8 - 1)*4 + i
-//                 w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2 - 1) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
-//             }
-
-//         }
-//         usart3_printf("\x06");     //检验通过，发送ACK
-//     }
-//     else
-//     {
-//         usart3_printf("\x15");     //检验失败，发送NACK
-//     }
-// }
-
-// void bootloader_iap_receive_usart2(void)
-// {
-//     xmodem_protocol_struct.receive_crc = xmodem_crc16_usart2(&usart2_rx_buffer[3], 128);
-//     usart3_printf("xmodem_protocol_struct.receive_crc : %x   ",xmodem_protocol_struct.receive_crc);
-//     usart3_printf("crc_h : %x   ",usart2_rx_buffer[131]);
-//     usart3_printf("crc_L : %x   \r\n",usart2_rx_buffer[132]);
-//     usart3_printf("crc : %x   \r\n",usart2_rx_buffer[131]*256 + usart2_rx_buffer[132]);
-//     if(xmodem_protocol_struct.receive_crc == usart2_rx_buffer[131]*256 + usart2_rx_buffer[132])       //crc检验
-//     {
-//         xmodem_protocol_struct.receive_buf_num++;                                   //接收到的包数（一包128byte）累加
-//         memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % 2 )*128], &usart2_rx_buffer[3], 128);      //复制到更新A区的buffer里
-//         if((xmodem_protocol_struct.receive_buf_num % 2) == 0)                           //每接收到2包（256byte）写入一页外部flash
-//         {
-//             //偏移量为前面有 data_block_num 块 64kb 换算成字节 等于块数*64*1024字节 换算成页 再除以256   最后加上当接收的页数的偏移 xmodem_protocol_struct.receive_buf_num/8 - 1)*4 + i
-//             w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2 - 1) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
-//         }
-
-//         usart2_send_byte(0x06);     //检验通过，发送ACK
-//     }
-//     else
-//     {
-//         usart2_send_byte(0x15);     //检验失败，发送NACK
-//     }
-// }
 
 void bootloader_iap_receive(void)
 {
     if (xmodem_protocol_struct.direction_flag == 2)
     {
+
+        static uint8_t progress = 0;
+        static uint8_t start_flag = 0;
+        static uint8_t print_counter = 3; 
+
+        if(start_flag == 0)
+        {
+            start_flag = 1;
+            usart3_printf("\r\nStart Program Download\r\n");
+        }
+        
+        // usart3_printf("xmodem_protocol_struct.receive_crc : %x   ",xmodem_protocol_struct.receive_crc);
+        // usart3_printf("crc_h : %x   ",usart2_rx_buffer[131]);
+        // usart3_printf("crc_L : %x   \r\n",usart2_rx_buffer[132]);
+        // usart3_printf("crc : %x   \r\n",usart2_rx_buffer[131]*256 + usart2_rx_buffer[132]);
+
         xmodem_protocol_struct.receive_crc = xmodem_crc16_usart2(&usart2_rx_buffer[3], 128);
-        usart3_printf("xmodem_protocol_struct.receive_crc : %x   ",xmodem_protocol_struct.receive_crc);
-        usart3_printf("crc_h : %x   ",usart2_rx_buffer[131]);
-        usart3_printf("crc_L : %x   \r\n",usart2_rx_buffer[132]);
-        usart3_printf("crc : %x   \r\n",usart2_rx_buffer[131]*256 + usart2_rx_buffer[132]);
         if(xmodem_protocol_struct.receive_crc == usart2_rx_buffer[131]*256 + usart2_rx_buffer[132])       //crc检验
         {
+            print_counter++;
+            // //总字节大小、已接收字节大小、进度
+            if (print_counter >= 5 || progress >= 95) 
+            {
+                print_counter = 0;
+                xmodem_protocol_struct.total_size = (uint32_t)usart2_rx_buffer[133] << 24 | (uint32_t)usart2_rx_buffer[134] << 16 | (uint32_t)usart2_rx_buffer[135] << 8 | (uint32_t)usart2_rx_buffer[136];
+                xmodem_protocol_struct.received_size = (uint32_t)usart2_rx_buffer[137] << 24 | (uint32_t)usart2_rx_buffer[138] << 16 | (uint32_t)usart2_rx_buffer[139] << 8 | (uint32_t)usart2_rx_buffer[140];
+                progress = xmodem_protocol_struct.received_size * 100 / xmodem_protocol_struct.total_size;
+                usart3_printf("progress : %d%% (%u/%u Byte)\r\n", progress, xmodem_protocol_struct.received_size, xmodem_protocol_struct.total_size);
+                if(progress >= 100)
+                {
+                    progress = 0;
+                }
+            }
+
             xmodem_protocol_struct.receive_buf_num++;                                   //接收到的包数（一包128byte）累加
             memcpy(&update_a_struct.buffer[((xmodem_protocol_struct.receive_buf_num - 1) % 2 )*128], &usart2_rx_buffer[3], 128);      //复制到更新A区的buffer里
             if((xmodem_protocol_struct.receive_buf_num % 2) == 0)                           //每接收到2包（256byte）写入一页外部flash
@@ -342,49 +312,6 @@ void bootloader_iap_receive(void)
     }
 }
 
-//todo
-// void bootloader_iap_end(void)
-// {
-
-//     usart3_printf("\x06");         //接收数据结束，发送ACK
-//     if (xmodem_protocol_struct.direction_flag == 0)
-//     {
-//         if((xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128)) != 0)           //处理接收到的剩余不满8包（1024byte）写入一页flash的数据
-//         { 
-//             flash_write(FLASH_BLOCK_A_START_ADDR + (xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, (xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128))*128);  
-//         }
-//         usart3_printf("Serial IAP Download Success\r\n");
-//         usart3_printf("System Will Reset\r\n");
-//         delay_ms(1000);
-//         NVIC_SystemReset();
-//     }
-//     else if (xmodem_protocol_struct.direction_flag == 1)
-//     {
-//         if((xmodem_protocol_struct.receive_buf_num % 2) != 0)                               //处理接收到的剩余不满2包（256byte）写入一页外部flash的数据
-//         {
-//             w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
-//         }
-//         ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.receive_buf_num *128;
-//         at24c256_write_ota_data();
-//         usart3_printf("Serial IAP Download Success\r\n");
-//         delay_ms(1000);
-//         bootloader_enter_info_printf();
-//     }  
-// }
-
-// void bootloader_iap_end_usart2(void)
-// {
-//     usart2_send_byte(0x06);         //接收数据结束，发送ACK
-//     if((xmodem_protocol_struct.receive_buf_num % 2) != 0)                               //处理接收到的剩余不满2包（256byte）写入一页外部flash的数据
-//     {
-//         w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
-//     }
-//     ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.receive_buf_num *128;
-//     at24c256_write_ota_data();
-//     usart3_printf("Program Download Success\r\n");
-//     delay_ms(1000);
-//     bootloader_enter_info_printf(); 
-// }
 
 void bootloader_iap_end(void)
 {
@@ -393,9 +320,9 @@ void bootloader_iap_end(void)
         usart2_send_byte(0x06);         //接收数据结束，发送ACK
         if((xmodem_protocol_struct.receive_buf_num % 2) != 0)                               //处理接收到的剩余不满2包（256byte）写入一页外部flash的数据
         {
-            w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, 256);
+            w25q64_write_page((xmodem_protocol_struct.receive_buf_num/2) + update_a_struct.data_block_num * 64 * 4, update_a_struct.buffer, xmodem_protocol_struct.total_size % 256);
         }
-        ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.receive_buf_num *128;
+        ota_info_struct.app_data_size[update_a_struct.data_block_num] = xmodem_protocol_struct.total_size;
         at24c256_write_ota_data();
         usart3_printf("Program Download Success\r\n");
         delay_ms(1000);
@@ -410,6 +337,7 @@ void bootloader_iap_end(void)
             { 
                 flash_write(FLASH_BLOCK_A_START_ADDR + (xmodem_protocol_struct.receive_buf_num / (FLASH_PAGE_SIZE/128)) * FLASH_PAGE_SIZE, (uint32_t *)update_a_struct.buffer, (xmodem_protocol_struct.receive_buf_num % (FLASH_PAGE_SIZE/128))*128);  
             }
+            delay_ms(100);
             usart3_printf("Serial IAP Download Success\r\n");
             usart3_printf("System Will Reset\r\n");
             delay_ms(1000);
@@ -517,7 +445,7 @@ void bootloader_system_reset(void)
 
 void bootloader_event_detect(void)
 {   
-    uint8_t i;
+    // uint8_t i;
 
     if(get_usart3_receive_flag())
     {
@@ -584,13 +512,13 @@ void bootloader_event_detect(void)
     }
     if(get_usart2_receive_flag())
     {
-        usart3_printf("usart2_rx_len = %d\r\n",usart2_rx_len);
-        for(i=0; i<usart2_rx_len;i++)
-        {
-            usart3_printf("%x ",usart2_rx_buffer[i]);
-        }
+        // usart3_printf("usart2_rx_len = %d\r\n",usart2_rx_len);
+        // for(i=0; i<usart2_rx_len;i++)
+        // {
+        //     usart3_printf("%x ",usart2_rx_buffer[i]);
+        // }
         //usart2 下载
-        if((usart2_rx_len == 133) && (usart2_rx_buffer[0] == 0x01))
+        if((usart2_rx_len == 141) && (usart2_rx_buffer[0] == 0x01))
         {
             bootloader_current_event = BOOTLOADER_EVENT_IAP_RECEIVE_DATA;
         }
@@ -620,25 +548,11 @@ void bootloader_event_handle(void)
             bootloader_iap_ready();
             break;
         case BOOTLOADER_EVENT_IAP_RECEIVE_DATA: 
-            // if(xmodem_protocol_struct.direction_flag == 2)
-            // {
-            //     bootloader_iap_receive_usart2();
-            // }   
-            // else 
-            // {
-                bootloader_iap_receive();
-            // }
+            bootloader_iap_receive();
             bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
             break;
         case BOOTLOADER_EVENT_IAP_END: 
-            // if(xmodem_protocol_struct.direction_flag == 2)
-            // {
-            //     bootloader_iap_end_usart2();
-            // }   
-            // else 
-            // {
-                bootloader_iap_end();
-            // }
+            bootloader_iap_end();
             bootloader_current_event = BOOTLOADER_EVENT_NONE;		//清除标志位 
             break;  
         case BOOTLOADER_EVENT_SET_OTA_VERSION: 

@@ -7,7 +7,7 @@
 static u8  fac_us=0;							//us延时倍乘数			   
 static u16 fac_ms=0;							//ms延时倍乘数,在ucos下,代表每个节拍的ms数
 // 全局变量记录毫秒数
-static __IO uint32_t uwTick = 0;
+
 	
 #if SYSTEM_SUPPORT_OS							//如果SYSTEM_SUPPORT_OS定义了,说明要支持OS了(不限于UCOS).
 //当delay_us/delay_ms需要支持OS的时候需要三个与OS相关的宏定义和函数来支持
@@ -185,24 +185,6 @@ void delay_ms(u16 nms)
 } 
 
 
-
-// 初始化SysTick
-void SysTick_Init(void) {
-    // 配置SysTick中断周期为1ms
-    if (SysTick_Config(SystemCoreClock / 1000)) {
-        while (1); // 配置失败处理
-    }
-}
-
-// SysTick中断处理函数
-void SysTick_Handler(void) {
-    uwTick++;
-}
-
-// 等效于HAL_GetTick()
-uint32_t GetTick(void) {
-    return uwTick;
-}
 #endif 
 
 
