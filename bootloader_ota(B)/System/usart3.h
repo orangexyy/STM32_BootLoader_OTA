@@ -4,11 +4,11 @@
 #include "sys.h"
 #include "stm32f10x.h"
 
-#define USART_RX_SIZE   256
-#define USART_TX_SIZE   256
-#define USART_RX_MAX    256
+#define USART3_RX_SIZE   256
+#define USART3_TX_SIZE   256
+#define USART3_RX_MAX    256
 
-extern uint8_t usart3_rx_buffer[USART_RX_SIZE];
+extern uint8_t usart3_rx_buffer[USART3_RX_SIZE];
 extern uint16_t usart3_rx_buffer_len;
 
 uint8_t get_usart3_receive_flag(void);

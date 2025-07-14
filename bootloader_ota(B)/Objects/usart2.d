@@ -34,7 +34,7 @@
 .\objects\usart2.o: .\User\stm32f10x_it.h
 .\objects\usart2.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\usart2.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
+.\objects\usart2.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\usart2.o: .\User\main.h
 .\objects\usart2.o: .\System\sys.h
-.\objects\usart2.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\usart2.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdarg.h

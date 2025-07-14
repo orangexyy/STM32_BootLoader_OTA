@@ -2,11 +2,11 @@
 #define __UASRT2_H
 #include "stm32f10x.h"
 
-#define USART_RX_SIZE   256
-#define USART_TX_SIZE   256
-#define USART_RX_MAX    256
+#define USART2_RX_SIZE   256
+#define USART2_TX_SIZE   256
+#define USART2_RX_MAX    256
 
-extern uint8_t usart2_rx_buffer[USART_RX_SIZE];
+extern uint8_t usart2_rx_buffer[USART2_RX_SIZE];
 extern uint16_t usart2_rx_len;
 
 uint8_t get_usart2_receive_flag(void);

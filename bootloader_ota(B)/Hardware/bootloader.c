@@ -123,7 +123,7 @@ void bootloader_load_a_block(uint32_t addr)
         SET_PC = (set_pc)*(uint32_t *)(addr+4);         //将向量表中的第二个成员的内容给到PC指针
         bootloader_deinit_periph();
         SET_PC();
-        usart3_printf("Go To A Block Success\r\n");
+        // usart3_printf("Go To A Block Success\r\n");
     }
     else 
     {
@@ -202,7 +202,7 @@ void bootloader_iap_start(void)
         ota_info_struct.app_data_size[update_a_struct.data_block_num] = 0;
         w25q64_sector_erase_64k(update_a_struct.data_block_num);
         at24c256_write_ota_data();          //擦除之后写入，查询时才会更新 
-        usart3_printf("Get Program From Internet And Download To External FLASH\r\n");
+        // bootloader_connect_server();
         usart3_printf("Waiting For The Download");
     }
 }
@@ -231,7 +231,7 @@ void bootloader_iap_receive(void)
 {
     if (xmodem_protocol_struct.direction_flag == 2)
     {
-        
+        uint8_t version[16];
         static uint8_t progress = 0;
         static uint8_t print_counter = 3; 
 
@@ -248,12 +248,14 @@ void bootloader_iap_receive(void)
         if(xmodem_protocol_struct.receive_crc == usart2_rx_buffer[131]*256 + usart2_rx_buffer[132])       //crc检验
         {
             print_counter++;
-            if (print_counter >= 5 || progress >= 95) 
+            if (print_counter >= 3 || progress >= 95) 
             {
                 print_counter = 0;
+                memcpy(version, &usart2_rx_buffer[133], 16); 
+                usart3_printf("version : %s\r\n", version);
                 //总字节大小、已接收字节大小、进度
-                xmodem_protocol_struct.total_size = (uint32_t)usart2_rx_buffer[133] << 24 | (uint32_t)usart2_rx_buffer[134] << 16 | (uint32_t)usart2_rx_buffer[135] << 8 | (uint32_t)usart2_rx_buffer[136];
-                xmodem_protocol_struct.received_size = (uint32_t)usart2_rx_buffer[137] << 24 | (uint32_t)usart2_rx_buffer[138] << 16 | (uint32_t)usart2_rx_buffer[139] << 8 | (uint32_t)usart2_rx_buffer[140];
+                xmodem_protocol_struct.total_size = (uint32_t)usart2_rx_buffer[149] << 24 | (uint32_t)usart2_rx_buffer[150] << 16 | (uint32_t)usart2_rx_buffer[151] << 8 | (uint32_t)usart2_rx_buffer[152];
+                xmodem_protocol_struct.received_size = (uint32_t)usart2_rx_buffer[153] << 24 | (uint32_t)usart2_rx_buffer[154] << 16 | (uint32_t)usart2_rx_buffer[155] << 8 | (uint32_t)usart2_rx_buffer[156];
                 progress = xmodem_protocol_struct.received_size * 100 / xmodem_protocol_struct.total_size;
                 usart3_printf("progress : %d%% (%u/%u Byte)\r\n", progress, xmodem_protocol_struct.received_size, xmodem_protocol_struct.total_size);
                 if(progress >= 100)
@@ -519,7 +521,7 @@ void bootloader_event_detect(void)
         //     usart3_printf("%x ",usart2_rx_buffer[i]);
         // }
         //usart2 下载
-        if((usart2_rx_len == 141) && (usart2_rx_buffer[0] == 0x01))
+        if((usart2_rx_len == 157) && (usart2_rx_buffer[0] == 0x01))
         {
             bootloader_current_event = BOOTLOADER_EVENT_IAP_RECEIVE_DATA;
         }
@@ -620,8 +622,141 @@ void bootloader_event_handle(void)
     }
 }
 
-
-
+void bootloader_connect_server(void)
+{
+    // uint8_t status = 0;
+    // uint32_t timeout = 0;
+    // bool wifi_connected = false;
+    // bool mqtt_connected = false;
+    
+    // usart2_rx_len = 0;
+    
+    // usart2_send_byte(0x01);
+    // usart3_printf("Checking ESP8266 status...\r\n");
+    
+    // // 等待响应
+    // timeout = 0;
+    // while(usart2_rx_len < 6 && timeout < 5000) 
+    // {
+    //     timeout++;
+    //     // delay_ms(1); 
+    // }
+    
+    // if(usart2_rx_len == 6) 
+    // {
+    //     status = usart2_rx_buffer[4];
+    //     usart2_rx_len = 0;          
+    // }
+    // else 
+    // {
+    //     usart3_printf("No response from ESP8266\r\n");
+    //     return;
+    // }
+    
+    // // 2. 连接WiFi 
+    // if(status == 0x01)              // WiFi未连接
+    // { 
+    //     usart3_printf("WIFI Is Not Connect\r\n");
+    //     usart2_send_byte(0x02);
+    //     usart3_printf("WIFI Is Connecting\r\n");
+        
+    //     // 等待WiFi连接完成
+    //     timeout = 0;
+    //     while(timeout < 30000)      // 30秒超时
+    //     { 
+    //         // 发送状态查询命令
+    //         usart2_send_byte(0x01);
+            
+    //         // 等待响应
+    //         uint32_t resp_timeout = 0;
+    //         while(usart2_rx_len < 6 && resp_timeout < 1000) 
+    //         {
+    //             resp_timeout++;
+    //             // delay_ms(1);
+    //         }
+            
+    //         if(usart2_rx_len == 6) 
+    //         {
+    //             status = usart2_rx_buffer[4];
+    //             usart2_rx_len = 0; 
+                
+    //             if(status == 0x02 || status == 0x03) 
+    //             {
+    //                 usart3_printf("WIFI Is Connected\r\n");
+    //                 wifi_connected = true;
+    //                 break;
+    //             }
+    //         }
+            
+    //         timeout += 1000;
+    //         // delay_ms(1000); // 每秒查询一次
+    //     }
+        
+    //     if(!wifi_connected) 
+    //     {
+    //         usart3_printf("WiFi connection timed out\r\n");
+    //         return;
+    //     }
+    // } 
+    // else if(status == 0x02 || status == 0x03) 
+    // {
+    //     usart3_printf("WIFI Is Already Connected\r\n");
+    //     wifi_connected = true;
+    // }
+    
+    // // 3. 连接MQTT
+    // if(wifi_connected && !mqtt_connected) 
+    // {
+    //     usart2_send_byte(0x03);
+    //     usart3_printf("Connecting To MQTT Server\r\n");
+        
+    //     // 等待MQTT连接完成
+    //     timeout = 0;
+    //     while(timeout < 30000)       // 30秒超时
+    //     {
+    //         // 发送状态查询命令
+    //         usart2_send_byte(0x01);
+            
+    //         // 等待响应
+    //         uint32_t resp_timeout = 0;
+    //         while(usart2_rx_len < 6 && resp_timeout < 1000) 
+    //         {
+    //             resp_timeout++;
+    //             // delay_ms(1);
+    //         }
+            
+    //         if(usart2_rx_len == 6) 
+    //         {
+    //             status = usart2_rx_buffer[4];
+    //             usart2_rx_len = 0; 
+                
+    //             if(status == 0x04) 
+    //             {
+    //                 usart3_printf("MQTT Server Is Connected\r\n");
+    //                 mqtt_connected = true;
+    //                 break;
+    //             }
+    //         }
+            
+    //         timeout += 1000;
+    //         // delay_ms(1000); // 每秒查询一次
+    //     }
+        
+    //     if(!mqtt_connected) 
+    //     {
+    //         usart3_printf("MQTT connection timed out\r\n");
+    //         return;
+    //     }
+    // }
+    
+    // // 4. 开始下载
+    // if(mqtt_connected) 
+    // {
+    //     usart2_send_byte(0x07);
+    //     usart3_printf("ESP8266 setup completed successfully\r\n");
+    // }
+    // usart3_printf("Ready To Download Program\r\n");
+}
 
 
 

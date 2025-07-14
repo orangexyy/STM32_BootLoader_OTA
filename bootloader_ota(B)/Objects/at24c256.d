@@ -33,6 +33,7 @@
 .\objects\at24c256.o: .\User\stm32f10x_it.h
 .\objects\at24c256.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\at24c256.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
+.\objects\at24c256.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\at24c256.o: .\User\main.h
 .\objects\at24c256.o: .\System\sys.h
 .\objects\at24c256.o: Hardware\at24c256.h

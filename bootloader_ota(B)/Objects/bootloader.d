@@ -33,6 +33,7 @@
 .\objects\bootloader.o: .\User\stm32f10x_it.h
 .\objects\bootloader.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\bootloader.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
+.\objects\bootloader.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\bootloader.o: .\User\main.h
 .\objects\bootloader.o: .\System\delay.h
 .\objects\bootloader.o: .\System\usart2.h

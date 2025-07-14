@@ -10,7 +10,7 @@ void led_init(void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	
-	GPIO_SetBits(GPIOC,GPIO_Pin_1 | GPIO_Pin_2);
+	GPIO_SetBits(GPIOC,GPIO_Pin_13);
 }
 
 void led1_on(void)		

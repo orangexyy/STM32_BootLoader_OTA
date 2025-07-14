@@ -33,7 +33,7 @@
 .\objects\usart3.o: .\User\stm32f10x_it.h
 .\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
+.\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\usart3.o: .\User\main.h
 .\objects\usart3.o: .\System\sys.h
-.\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\usart3.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdarg.h

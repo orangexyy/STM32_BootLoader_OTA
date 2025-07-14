@@ -6,8 +6,8 @@
 
 volatile bool usart3_receive_flag = false;    //串口是否已接收完毕
 uint16_t usart3_rx_buffer_len;
-uint8_t usart3_rx_buffer[USART_RX_SIZE];
-uint8_t usart3_tx_buffer[USART_TX_SIZE];
+uint8_t usart3_rx_buffer[USART3_RX_SIZE];
+uint8_t usart3_tx_buffer[USART3_TX_SIZE];
 
 void USART3_IRQHandler(void)
 {
@@ -17,8 +17,8 @@ void USART3_IRQHandler(void)
         USART3 -> DR;  //访问一下DR寄存器
 
         DMA_Cmd(DMA1_Channel3, DISABLE);
-        usart3_rx_buffer_len = USART_RX_MAX - DMA_GetCurrDataCounter(DMA1_Channel3);
-        DMA_SetCurrDataCounter( DMA1_Channel3, USART_RX_MAX);
+        usart3_rx_buffer_len = USART3_RX_MAX - DMA_GetCurrDataCounter(DMA1_Channel3);
+        DMA_SetCurrDataCounter( DMA1_Channel3, USART3_RX_MAX);
         DMA_Cmd(DMA1_Channel3, ENABLE);
 
         

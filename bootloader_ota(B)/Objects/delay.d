@@ -33,5 +33,6 @@
 .\objects\delay.o: .\User\stm32f10x_it.h
 .\objects\delay.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\delay.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
+.\objects\delay.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\delay.o: .\User\main.h
 .\objects\delay.o: .\System\sys.h

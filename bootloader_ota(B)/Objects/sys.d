@@ -32,5 +32,6 @@
 .\objects\sys.o: .\User\stm32f10x_it.h
 .\objects\sys.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\sys.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
+.\objects\sys.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\sys.o: .\User\main.h
 .\objects\sys.o: .\System\sys.h

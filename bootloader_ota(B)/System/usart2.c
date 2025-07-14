@@ -7,8 +7,8 @@
 
 volatile bool usart2_receive_flag = false;    //串口是否已接收完毕
 uint16_t usart2_rx_len;
-uint8_t usart2_rx_buffer[USART_RX_SIZE];
-uint8_t usart2_tx_buffer[USART_TX_SIZE];
+uint8_t usart2_rx_buffer[USART2_RX_SIZE];
+uint8_t usart2_tx_buffer[USART2_TX_SIZE];
 
 void USART2_IRQHandler(void)
 {
@@ -18,8 +18,8 @@ void USART2_IRQHandler(void)
         USART2 -> DR;  //访问一下DR寄存器
 
         DMA_Cmd(DMA1_Channel6, DISABLE);
-        usart2_rx_len = USART_RX_MAX - DMA_GetCurrDataCounter(DMA1_Channel6);
-        DMA_SetCurrDataCounter( DMA1_Channel6, USART_RX_MAX);
+        usart2_rx_len = USART2_RX_MAX - DMA_GetCurrDataCounter(DMA1_Channel6);
+        DMA_SetCurrDataCounter( DMA1_Channel6, USART2_RX_MAX);
         DMA_Cmd(DMA1_Channel6, ENABLE);
 
         usart2_rx_buffer[usart2_rx_len] = '\0';          //给最后一位补上结束符

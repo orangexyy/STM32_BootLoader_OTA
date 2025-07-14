@@ -33,6 +33,7 @@
 .\objects\flash.o: .\User\stm32f10x_it.h
 .\objects\flash.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\flash.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
+.\objects\flash.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\flash.o: .\User\main.h
 .\objects\flash.o: .\System\sys.h
 .\objects\flash.o: .\System\delay.h

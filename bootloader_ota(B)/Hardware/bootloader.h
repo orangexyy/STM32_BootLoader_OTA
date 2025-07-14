@@ -65,7 +65,7 @@ void bootloader_system_reset(void);
 void bootloader_event_detect(void);
 void bootloader_event_handle(void);
 
-
+void bootloader_connect_server(void);
 
 
 #endif
