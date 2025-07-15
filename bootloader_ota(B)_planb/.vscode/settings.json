@@ -1,0 +1,21 @@
+{
+    "files.associations": {
+        "stm32f10x.h": "c",
+        "delay.h": "c",
+        "usart.h": "c",
+        "iic.h": "c",
+        "at24c02.h": "c",
+        "sys.h": "c",
+        "w25q64.h": "c",
+        "timer.h": "c",
+        "oled.h": "c",
+        "key.h": "c",
+        "led.h": "c",
+        "bootloader.h": "c",
+        "main.h": "c",
+        "stm32f10x_it.h": "c",
+        "usart3.h": "c",
+        "flash.h": "c",
+        "at24c256.h": "c"
+    }
+}
